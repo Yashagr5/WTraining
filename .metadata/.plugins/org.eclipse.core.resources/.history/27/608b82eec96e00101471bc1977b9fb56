@@ -1,0 +1,15 @@
+package set_example;
+
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
+
+public class Main_set {
+	 private static Scanner sc  = new Scanner(System.in);
+	 Set<EmployeeSet> emp = new HashSet<>();
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

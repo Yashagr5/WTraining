@@ -1,0 +1,7 @@
+package OOPs;
+
+public interface IDiscountable {
+public static void main() {
+	
+}
+}

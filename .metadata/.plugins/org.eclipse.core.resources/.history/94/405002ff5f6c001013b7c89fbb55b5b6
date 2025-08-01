@@ -1,0 +1,41 @@
+package com.wipro;
+import java.lang.System;
+
+public class stringBuilder {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		long start, end;
+		start = System.currentTimeMillis();
+		String s="";
+		
+		for(int i=0; i<3000; i++) {
+			s+="Some";
+		}
+		end = System.currentTimeMillis();
+		System.out.println("Time Taken: "+(end-start));
+//STring Builder : Act as an protector of thread and provide thread safety if one thrwad is not executed then other will not execute too.
+//		no new object is created
+		StringBuilder sb = new StringBuilder("Wipro");
+		sb.append("Ltd.");
+		start = System.currentTimeMillis();
+		for(int i=0; i<3000; i++) {
+//			s+="Some";
+			sb.append("Ltd.");
+		}
+		end = System.currentTimeMillis();
+		System.out.println("Time Taken: "+(end-start));
+		
+//		String Buffer gives slow performance because of synchronization
+		StringBuffer sbd = new StringBuffer("Wipro");
+		sbd.append("Ltd.");
+		start = System.currentTimeMillis();
+		for(int i=0; i<3000; i++) {
+//			s+="Some";
+			sbd.append("Ltd.");
+		}
+		end = System.currentTimeMillis();
+		System.out.println("Time Taken: "+(end-start));
+	}
+
+}

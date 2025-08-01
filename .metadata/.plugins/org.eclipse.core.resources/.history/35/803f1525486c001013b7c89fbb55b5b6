@@ -1,0 +1,14 @@
+package com.wipro;
+
+public class StringExample {
+
+	public static void main(String[] args) {
+String s = "Yash";
+System.out.println(s.hashCode());
+System.out.println(System.identityHashCode(s));
+String s1= new String("Yash");
+System.out.println(s1.hashCode());
+System.out.println(System.identityHashCode(s1));
+	}
+
+}

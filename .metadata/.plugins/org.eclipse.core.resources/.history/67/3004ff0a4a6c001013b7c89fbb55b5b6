@@ -1,0 +1,63 @@
+package com.wipro;
+
+public class StringExample {
+
+	public static void main(String[] args) {
+//String s = "Yash";
+//System.out.println(s.hashCode());
+//System.out.println(System.identityHashCode(s));
+//String s1= new String("Yash");
+//System.out.println(s1.hashCode());
+//System.out.println(System.identityHashCode(s1));
+//
+//System.out.println(s==s1); // different reference values
+//System.out.println(s.equals(s1)); // it checks the content
+
+
+// String concatenation
+String sValue1="Yash";
+String sValue2 = "Ya"+"sh";
+String sValue3 = "Ya";
+String sValue4 = "sh";
+String newValue =sValue3+sValue4;
+System.out.println(sValue1 == newValue);
+	}
+
+}
+
+
+
+
+//package com.wipro;
+//
+//public class StringExample {
+//
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//		
+//		// Creating a string object using a literal
+//		
+//		String s = "Niti";  // String Pool in Heap 
+//		System.out.println(s.hashCode());
+//		// this gives the actual memory identity where it is stored
+//		System.out.println(System.identityHashCode(s));
+//		//  creating a string object using new keyword
+//		
+//		String s1 = new String("Nitin"); // Heap  
+//		
+//		System.out.println(s1.hashCode());  //if same content as S object has then it will give the same hash
+//		System.out.println(System.identityHashCode(s1)); // different memory and different value
+//		
+//		
+//		// Whenever the String class overrides
+//		// the hashCode() method then it is computing on the basis 
+//		// of the content not the memory location
+//		
+//		System.out.println(s==s1); // different memory references
+//		System.out.println(s.equals(s1)); // it check the content
+//		
+//	
+//		
+//	}
+//
+//}

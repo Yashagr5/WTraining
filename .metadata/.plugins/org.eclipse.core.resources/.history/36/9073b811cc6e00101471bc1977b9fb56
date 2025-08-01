@@ -1,0 +1,73 @@
+package set_example;
+
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
+
+public class Main_set {
+	 private static Scanner sc  = new Scanner(System.in);
+	 static Set<EmployeeSet> emp = new HashSet<>();
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		while(true) {
+			System.out.println("Enter your choice: 1. AddEmployee 2.ViewEmployee 3. ");
+			int choice = sc.nextInt();
+			switch(choice) {
+			case 1 -> addEmployee();
+			case 2 -> viewEmployee();
+			case 3 -> deleteEmployee();
+			case 4 -> searchEmployee();
+			case 5 -> addEmployeeAtPosition();
+			}
+		}
+
+	}
+	
+	static void addEmployee() {
+		System.out.println("Enter id  , Name , salary");
+		  int id=sc.nextInt();
+		  String name= sc.next();
+		  int salary = sc.nextInt();
+		  emp.add(new EmployeeSet(id, name, salary));
+	}
+	
+
+    static void viewEmployee() {
+            System.out.println("Employee List:");
+            for (EmployeeSet e : emp) {
+                System.out.println(e);
+        }
+    }
+
+    static void deleteEmployee() {
+        System.out.print("Enter ID to delete: ");
+        int id = sc.nextInt();
+        boolean found = false;
+
+        for (EmployeeSet e : emp) {
+            if (e.getId() == id) {
+                emp.remove(e);
+                System.out.println("Employee deleted.");
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Employee not found.");
+        }
+    }
+
+    static void searchEmployee() {
+        System.out.print("Enter ID to search: ");
+        int id = sc.nextInt();
+        for (EmployeeSet e : emp) {
+            if (e.getId() == id) {
+                System.out.println("Found: " + e);
+                return;
+            }
+        }
+        System.out.println("Employee not found.");
+    }
+
+}

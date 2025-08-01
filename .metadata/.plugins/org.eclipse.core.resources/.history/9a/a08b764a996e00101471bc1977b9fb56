@@ -1,0 +1,23 @@
+package ErrorHandling;
+
+import java.util.Scanner;
+
+public class IllegalArgumentExcept {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+
+        System.out.print("Enter a number: ");
+        String num = in.nextLine();
+        
+        try {
+            int n = Integer.parseInt(num);
+            System.out.println("Number is: " + n);
+        }
+        catch (NumberFormatException e) {
+            System.out.println("Invalid input! Please enter a valid number.");
+        } finally {
+            in.close(); // Close the scanner to prevent resource leaks
+        }
+    }
+}

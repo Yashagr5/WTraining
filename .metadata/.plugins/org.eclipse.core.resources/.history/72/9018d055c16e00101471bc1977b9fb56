@@ -1,0 +1,51 @@
+package collectionFrameworks;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+	 private static List<Employeee> list= new ArrayList<>();
+	 private static Scanner sc  = new Scanner(System.in);
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		while(true)
+		  {
+		   System.out.println("\n1.Add , 2.Delete , 3. Search , 4. View All");
+		   int choice = sc.nextInt();
+		   switch(choice)
+		   {
+		   case 1  -> addEmployee();
+		   case 2 -> deleteEmployeee();
+		   case 4-> viewAll();
+		   
+		   }
+		  }
+		 }
+		 
+		 static void addEmployee() {
+		  
+		  System.out.println("Enter id  , Name , salary");
+		  int id=sc.nextInt();
+		  String name= sc.next();
+		  double salary = sc.nextDouble();
+		  list.add(new Employeee(id,name,salary));
+		  
+		  
+		 }
+		 static void viewAll() {
+		  System.out.println("Employee Data\n");
+		  for(Employeee e: list) {
+		   System.out.println(e);
+		  }  
+		  }
+		 static void deleteEmployeee() {
+			  System.out.print("Enter employee ID to delete: ");
+			  int id= sc.nextInt();
+			  for(Employeee e: list) {
+			if(e.getId()==id){
+				  list.remove(e);
+				  System.out.println("Removed Successfully");
+			  }
+			  }
+		 }
+	}

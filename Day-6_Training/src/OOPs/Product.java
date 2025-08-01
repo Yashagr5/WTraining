@@ -1,0 +1,39 @@
+//package OOPs;
+//
+//public class Product {
+//	
+//	private final String name;
+//	private final double price;
+//	
+//	private Product(ProductBuilder pb) {
+//		this.name= pb.name;
+//		this.price= pb.price;
+//	}
+//	public static class ProductBuilder{
+//		private String name;
+//		private double price;
+//		
+//		public void setName(String name) {
+//			this.name = name;
+//			return this;
+//		}
+//		
+//		public void setPrice(double price) {
+//			this.price = price;
+//			return this;
+//		}
+//		
+//		public Product build() {
+//		return new Product(this);	
+//		}
+//	}
+//	public void show() {
+//		System.out.println("Product: "+name+" Price: "+ price);
+//	}
+//
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//}

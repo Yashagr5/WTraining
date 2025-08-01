@@ -1,0 +1,84 @@
+package OOPs;
+
+abstract class Products
+{
+	//sharing common state in Multiple and Hybrid Inheritance
+	protected String name;
+	protected double price;
+	public Products(String name, double price) {
+		super();
+		this.name = name;
+		this.price = price;
+	}
+	
+	public void showDetails()
+	{
+		
+		System.out.println(name + " : Rs. " + price);
+	}
+
+
+}
+
+class Electronics extends Products
+{
+
+	public Electronics(String name, double price) {
+		super(name, price);
+		// TODO Auto-generated constructor stub
+	}
+	
+	public void showWarranty()
+	{
+		System.out.println( name + " This product comes with 2 years of warranty");
+	}
+	
+	
+
+}
+
+class Grocery extends Products
+{
+
+	public Grocery(String name, double price) {
+		super(name, price);
+		// TODO Auto-generated constructor stub
+	}
+	
+
+	public void showExpiry()
+	{
+		System.out.println( name + " This product will expire in 10 months");
+	}
+	
+}
+
+class Clothes extends Products{
+	public Clothes(String name, double price) {
+		super(name, price);
+	}
+	public void showTag() {
+		System.out.println(name+ " This is of denim and Washable too");
+	}
+}
+
+public class HierarchicalExample {
+
+	public static void main(String[] args) {
+			// TODO Auto-generated method stub
+
+			Electronics e = new Electronics("Laptop" , 56000);
+			Grocery g = new Grocery("Shampoo" , 500);
+			Clothes c = new Clothes("Jeans", 4500);
+			
+			e.showDetails();e.showWarranty();
+			g.showDetails();g.showExpiry();
+
+	}
+
+}
+
+
+
+
+

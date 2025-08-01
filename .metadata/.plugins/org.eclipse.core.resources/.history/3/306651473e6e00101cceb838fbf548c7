@@ -1,0 +1,9 @@
+//Java Program to Calculate Average Using Arrays
+package Practice;
+
+public class p5 {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+}

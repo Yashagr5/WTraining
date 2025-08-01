@@ -1,0 +1,24 @@
+package com.wipro;
+
+class Employee{
+	int id;
+	String name;
+		String position;
+		int salary;
+		
+		Employee(int id, String name, String position, int salary){
+			this.id=id;
+			this.name = name;
+			this.position = position;
+			this.salary = salary;
+		}
+}
+
+public class Assignment_class {
+
+	public static void main(String[] args) {
+		
+
+	}
+
+}

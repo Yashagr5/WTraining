@@ -1,0 +1,96 @@
+//package OOPs;
+//
+//public class Employee {
+//
+//	private int id;
+//	private String name;
+//	private double salary;
+//	
+//	public void setId(int id) {
+//		this.id = id;
+//	}
+//	
+//	public void setName(String name) {
+//		this.name = name.trim();
+//	}
+//	
+//	public void setSalary(double salary) {
+//		if(salary > 50000) {
+//			System.out.println("Salary should be less than 50000");
+//			System.exit(0);
+//			
+//		}
+//		else {
+//			this.salary = salary;
+//		}
+//	}
+//
+//	public int getId() {
+//		return id;
+//	}
+//
+//	public String getName() {
+//		return name;
+//	}
+//
+//	public double getSalary() {
+//		return salary;
+//	}
+//	
+//	public static void main(String[] args) {
+//		Employee employee = new Employee();
+//		employee.setId(101);
+//		employee.setName("Sofiya");
+//		employee.setSalary(60000);
+//		System.out.println("employee Id :" + employee.getId() + "Employee NAme : "+ employee.getName() +" Employee salary : "+ employee.getSalary());
+//		
+//		
+//		
+//	}
+//	
+//	
+//	
+//	
+//}
+//
+//
+//
+//
+//
+//
+//
+////package OOPs;
+////
+////class Role{
+////	private String roleType;
+////	private int roleCode=1001;
+////	
+////	public int getRoleCode() {
+////		return roleCode;
+////	}
+////	public void setRoleCode(int roleCode) {
+////		this.roleCode = roleCode;
+////	}
+////	public String getRoleType() {
+////		return roleType;
+////	}
+////	public void setRoleType(String roleType) {
+////		if(roleType.equalsIngnoreCase("Admin")|| roleType.equalsIgnoreCase("User")) {
+////			
+////		}
+////	})
+////}
+////
+////public class EncapsulationExample {
+////
+////	public static void main(String[] args) {
+////		// TODO Auto-generated method stub
+////Role r = new Role();
+////System.out.println("Role Type: "+r.setRoleType());
+////System.out.println("Role Type: "+r.getRoleType());
+////r.setRoleType("Guest User");
+////System.out.println("Role Type: "+r.getRoleType());
+////	}
+////
+////}
+////

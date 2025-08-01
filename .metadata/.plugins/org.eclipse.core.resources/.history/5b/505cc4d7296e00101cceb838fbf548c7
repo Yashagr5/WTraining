@@ -1,0 +1,22 @@
+package ErrorHandling;
+
+import java.util.Scanner;
+
+public class NumberFromattingExcept {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+		String num = sc.nextLine();
+		
+		try {
+			int n = Integer.parseInt(num);
+			System.out.println("No is: "+n);
+		}
+		catch(Exception e) {
+			System.out.println("no. is not valid");
+		}
+		
+		}
+
+}

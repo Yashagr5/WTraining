@@ -1,0 +1,23 @@
+package OOPs;
+
+final class  ConstantVariables{
+	public static final double gst = 0.18;
+	public static final double pi = 3.14;
+	public static final double bonus = 1000;
+}
+class Salary{
+	public final double salary(double basicPay) {
+		return basicPay*ConstantVariables.gst;
+	}
+}
+
+public class FinalKeywordExample {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+Salary s = new Salary();
+double sl = s.salary(40000);
+System.out.println("The Calculated salary is :"+sl);
+	}
+
+}

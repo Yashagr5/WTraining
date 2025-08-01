@@ -1,0 +1,130 @@
+package OOPs;
+
+class Employee {
+
+    private int id;
+    private String name;
+    private double salary;
+
+    // Constructor to initialize employee details
+    public Employee(int id, String name, double salary) {
+        this.id = id;
+        setName(name);
+        setSalary(salary);
+    }
+
+    // Setter method for name with trimming whitespace
+    public void setName(String name) {
+        this.name = name.trim();
+    }
+
+    // Setter method for salary with validation
+    public void setSalary(double salary) {
+        if (salary > 500000) {
+            this.salary = salary;
+        } else {
+            System.out.println("Valid salary is more than 500,000");
+            this.salary = 0;
+        }
+    }
+
+    // Getter methods for employee details
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    // Method to display employee details
+    public void display() {
+        System.out.println("EmployeeID: " + id + " Employee Name: " + name + " Salary: " + salary);
+    }
+}
+
+public class Encapsulation_Activity {
+
+    public static void main(String[] args) {
+        // Creating an Employee object and displaying details
+        Employee emp = new Employee(101, "Yash", 300000);
+        emp.display();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//package OOPs;
+//
+//class Employee {
+//	
+//	private int id;
+//	private String name;
+//	private double salary;
+//	
+//	public Employee(int id, String name, double salary) {
+//		this .id=id;
+//		setName(name);
+//		setSalary(salary);
+//	}
+//	public void setName(String name) {
+//		this.name = name.trim();
+//	}
+//	public void setSalary(double salary) {
+//		if(salary>500000) {
+//			this.salary=salary;
+//		}
+//		else {
+//			System.out.println("valid salary is More than 50000");
+//			this.salary=0;
+//		}
+//	}
+//	public int getId() {
+//		return id;
+//	}
+//	public String getName() {
+//		return name;
+//	}
+//	public double getSalary() {
+//		return salary;
+//	}
+//	
+//	public void display() {
+//		System.out.println("EmployeeID: "+id+" Employee Name: "+ name+ " Salary: "+salary);
+//	}
+//}
+//
+//public class Encapsulation_Activity {
+//
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//		Employee emp = new Employee(101, "Yash", 300000);
+//		emp.display();
+//		
+//	}
+//
+//}

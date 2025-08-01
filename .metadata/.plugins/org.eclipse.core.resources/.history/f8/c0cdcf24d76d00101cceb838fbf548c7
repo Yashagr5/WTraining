@@ -1,0 +1,10 @@
+package OOPs;
+
+public class ClearanceDiscount {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -1,0 +1,19 @@
+package OOPs;
+
+class Clothes extends Products impliments IDiscountable {
+	public Clothes(String name, double price) {
+		super(name, price);
+	}
+	public void showTag() {
+		System.out.println(name+ " This is of denim and Machine Washable too");
+	}
+}
+
+public class HybridExample {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

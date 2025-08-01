@@ -1,0 +1,11 @@
+//Java Program to Sort the Array Elements in Descending Order
+package Practice;
+
+public class p6 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

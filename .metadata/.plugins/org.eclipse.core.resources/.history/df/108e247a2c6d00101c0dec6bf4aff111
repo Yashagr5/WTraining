@@ -1,0 +1,49 @@
+package OOPs;
+
+class Employee{
+	private int id;
+	private String name;
+	private double salary;
+	
+	public Employee(int id, String name, double salary) {
+		this .id=id;
+		setName(name);
+		setSalary(salary);
+	}
+	public void setName(String name) {
+		this.name = name.trim();
+	}
+	public void setSalary(double salary) {
+		if(salary<500000) {
+			this.salary=salary;
+		}
+		else {
+			System.out.println("valid salary is less than 50000");
+			this.salary=0;
+		}
+	}
+	public int getId() {
+		return id;
+	}
+	public String getName() {
+		return name;
+	}
+	public double getSalary() {
+		return salary;
+	}
+	
+	public void display() {
+		System.out.println("EmployeeID: "+id+" Employee Name: "+ name+ " Salary: "+salary);
+	}
+}
+
+public class Encapsulation_Activity {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Employee emp = new Employee(101, "Yash", 30000);
+		emp.display();
+		
+	}
+
+}

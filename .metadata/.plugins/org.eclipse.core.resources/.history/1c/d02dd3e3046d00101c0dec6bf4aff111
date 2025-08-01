@@ -1,0 +1,29 @@
+package OOPs;
+
+class Public {
+	int id;
+	String name;
+	
+	public Public(int id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+	public Public() {
+		id= 101;
+		name="Yash";
+	}
+	
+	void display() {
+		System.out.println("ID: "+id+" Name: "+ name);
+	}
+}
+
+public class ThisKeywordExample {
+
+	public static void main(String[] args) {
+		Public p = new Public();
+		p.display();
+
+	}
+
+}

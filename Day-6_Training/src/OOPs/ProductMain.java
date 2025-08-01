@@ -1,0 +1,11 @@
+//package OOPs;
+//import OOPs.Product;
+//public class ProductMain {
+//
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//Product p = new Product.ProductBuilder().setName("Mouse").setPrice(400).build();
+//p.show();
+//	}
+//
+//}
