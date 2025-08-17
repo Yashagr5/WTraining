@@ -1,0 +1,103 @@
+<!-- change this project to student report card (in array (subject)))calculate the marks and grades-->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Report</title>
+     <!-- Bootstrap cdn link added of css-->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
+     <!-- custom stylesheet i.e style.css is added-->
+     <link ref="stylesheet" href="style.css">
+     <style>
+        html, body {
+        height: 100%;
+    }
+
+    /* .container {
+        min-height: calc(100vh - 80px);
+        padding-bottom: 80px;
+    } */
+        footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        padding: 10px 0;
+    }
+    header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(242, 242, 190);
+    padding: 15px 30px;
+    color: white;
+    header .logo img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%; /* Make logo round */
+}
+
+nav ul {
+    list-style-type: none;
+    display: flex;
+    margin-left: auto;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2rem;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+nav ul li a:hover {
+    background-color: #45a049;
+}
+}
+     </style>
+</head>
+<body class="bg-info-subtle">
+    <header>
+        <div class="logo">
+            <img style="width: 80px; height: 80px;" src="logo.png" alt="School Logo" />
+        </div>
+        <nav>   
+            <ul>
+                <li><button type="button" class="btn btn-outline-success">Home</button></li>
+                <li><button type="button" class="btn btn-outline-success">Student Profile</button></li>
+                <li><button type="button" class="btn btn-outline-success">Courses</button></li>
+                <li><button type="button" class="btn btn-outline-success">Contact Us</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+     <h1 class="text-center text-brown-mb-4"> Student Report Card System</h1>
+ 
+        <div class="card shadow p-4">
+            <form id="MarksForm">
+                <div class="mb-3">
+                    <label  class="form-label">Select subject(comma separated)</label>
+                    <input type="text" class="form-control" id="SubjectInput" placeholder="Science(100 Marks),
+    Maths(100 Marks),
+    Social Science(100 Marks),
+    Language(100 Marks)">
+                </div>
+              <button type="submit" class="btn btn-outline-secondary">Calculate Marks</button>
+            </form>
+
+         </div >
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <script src="StudentReport.js"></script>
+    <footer class="bg-dark text-white text-center">
+       &copy; 2025 Student Report . All Rights Reserved.
+     </footer>
+</body>
+</html>

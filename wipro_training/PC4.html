@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Div & Resume Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+        }
+
+        /* Left side (Div Sections) */
+        .left {
+            flex: 1;
+            background-color: black;
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .left h1 {
+            text-align: center;
+            margin-bottom: 0;
+        }
+        .section {
+            height: 150px;
+            text-align: center;
+            font-size: 24px;
+            color: white;
+            line-height: 150px;
+            margin: 0;
+        }
+        .section1 { background-color: limegreen; }
+        .section2 { background-color: orange; }
+        .section3 { background-color: hotpink; }
+
+        /* Right side (Resume) */
+        .right {
+            flex: 1;
+            padding: 20px 40px;
+            box-sizing: border-box;
+        }
+        .right h1 {
+            color: green;
+            margin-bottom: 5px;
+        }
+        .right h2 {
+            color: #2a7f62;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .job-title {
+            color: blue;
+        }
+        ul {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left Section -->
+    <div class="left">
+        <h1>Dividing HTML Page by using &lt;div&gt; Tag</h1>
+        <div class="section section1">Section 1</div>
+        <div class="section section2">Section 2</div>
+        <div class="section section3">Section 3</div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="right">
+        <h1>Your Name</h1>
+        <p><strong>Junior Frontend Developer</strong></p>
+        <p>123 Your Street<br>
+        Your City, ST 12345<br>
+        (123) 456-7890<br>
+        no_reply@example.com</p>
+
+        <h2>Skills</h2>
+        <p>HTML, CSS, JavaScript, Accessibility, Figma to Design, Responsive Web Design, Technical Writing, Presentation</p>
+
+        <h2>Education</h2>
+        <p><strong>School Name, Location - Degree</strong><br>
+        Month 20xx to Month 20xx</p>
+        <p>List of exciting things you did at university</p>
+
+        <h2>Experience</h2>
+        <p><strong>Company Name, Location - <span class="job-title">Job Title</span></strong><br>
+        Month 20xx to Month 20xx</p>
+        <ul>
+            <li>List of achievements</li>
+            <li>List of achievements</li>
+            <li>List of achievements</li>
+        </ul>
+        <p><strong>Skills:</strong> List of skills used or gained at this company</p>
+
+        <p><strong>Company Name, Location - <span class="job-title">Job Title</span></strong><br>
+        Month 20xx to Month 20xx</p>
+        <ul>
+            <li>List of achievements</li>
+            <li>List of achievements</li>
+            <li>List of achievements</li>
+        </ul>
+        <p><strong>Skills:</strong> List of skills used or gained at this company</p>
+
+        <h2>Across the Internet</h2>
+        <p>[Links to your profiles]</p>
+    </div>
+
+</body>
+</html>

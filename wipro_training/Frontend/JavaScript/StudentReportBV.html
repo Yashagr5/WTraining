@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Report</title>
+    <!-- Bootstrap cdn link added of css-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+        .container {
+            min-height: calc(100vh - 80px);
+            padding-bottom: 80px;
+        }
+        footer {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            padding: 10px 0;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgb(242, 242, 190);
+            padding: 15px 30px;
+            color: white;
+        }
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            margin-left: auto;
+        }
+        nav ul li {
+            margin-left: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 1.2rem;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+        nav ul li a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body class="bg-info-subtle">
+    <header>
+        <div class="logo">
+            <img style="width: 80px; height: 80px;" src="logo.png" alt="School Logo" />
+        </div>
+        <nav>
+            <ul>
+                <li><button type="button" class="btn btn-outline-success">Home</button></li>
+                <li><button type="button" class="btn btn-outline-success">Student Profile</button></li>
+                <li><button type="button" class="btn btn-outline-success">Courses</button></li>
+                <li><button type="button" class="btn btn-outline-success">Contact Us</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h1 class="text-center text-brown-mb-4">Student Report Card System</h1>
+
+        <div class="card shadow p-4">
+            <form id="MarksForm">
+                <div class="mb-3">
+                    <label for="SubjectInput" class="form-label">Enter subjects with marks (comma separated)</label>
+                    <input type="text" class="form-control" id="SubjectInput" placeholder="e.g. Science:80, Maths:90, English:75" required>
+                </div>
+                <button type="submit" class="btn btn-outline-secondary">Calculate Report Card</button>
+            </form>
+
+            <div id="result" class="mt-4" style="display:none;">
+                <h3>Student Report Card</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Marks</th>
+                            <th scope="col">Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-body"></tbody>
+                </table>
+                <h4 id="totalMarks"></h4>
+                <h4 id="grade"></h4>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <script>
+        // Function to calculate grade based on marks
+        function getGrade(marks) {
+            if (marks >= 90) return 'A+';
+            if (marks >= 80) return 'A';
+            if (marks >= 70) return 'B+';
+            if (marks >= 60) return 'B';
+            if (marks >= 50) return 'C+';
+            if (marks >= 40) return 'C';
+            return 'F';
+        }
+
+        // Event listener for form submission
+        document.getElementById('MarksForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            let input = document.getElementById('SubjectInput').value;
+            let subjectsArray = input.split(',').map(item => item.trim());
+            
+            let totalMarks = 0;
+            let totalSubjects = subjectsArray.length;
+            let resultBody = document.getElementById('result-body');
+            resultBody.innerHTML = ''; // Clear any previous results
+
+            subjectsArray.forEach(subject => {
+                let [subjectName, marks] = subject.split(':').map(item => item.trim());
+                marks = parseInt(marks);
+
+                if (isNaN(marks)) return; // Skip if marks are invalid
+
+                totalMarks += marks;
+
+                // Add row to the result table
+                let grade = getGrade(marks);
+                let row = `
+                    <tr>
+                        <td>${subjectName}</td>
+                        <td>${marks}</td>
+                        <td>${grade}</td>
+                    </tr>
+                `;
+                resultBody.innerHTML += row;
+            });
+
+            let averageMarks = totalMarks / totalSubjects;
+            let finalGrade = getGrade(averageMarks);
+
+            // Display the result section
+            document.getElementById('totalMarks').innerText = `Total Marks: ${totalMarks}`;
+            document.getElementById('grade').innerText = `Final Grade: ${finalGrade}`;
+
+            document.getElementById('result').style.display = 'block';
+        });
+    </script>
+
+    <footer class="bg-dark text-white text-center">
+        &copy; 2025 Student Report. All Rights Reserved.
+    </footer>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans/"
+    xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans/ http://www.springframework.org/schema/beans//spring-beans.xsd">
+
+    <bean id="stud1" class="com.company.springcore.xmlbasedconfig.Student">
+    
+    <!-- via setter injection-->
+        
+        <property name="sid" value="101"/>
+        
+    </bean>
+
+</beans>

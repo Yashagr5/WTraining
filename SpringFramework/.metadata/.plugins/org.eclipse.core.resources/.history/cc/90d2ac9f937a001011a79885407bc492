@@ -1,0 +1,9 @@
+package com.company.springcore.annotationbeans;
+
+public class Customer {
+	public void welcomeCustomer()
+	{
+		
+		System.out.println("Annotation Based Config File");
+	}
+}

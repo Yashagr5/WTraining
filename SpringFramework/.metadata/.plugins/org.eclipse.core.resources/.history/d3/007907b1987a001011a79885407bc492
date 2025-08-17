@@ -1,0 +1,29 @@
+package com.company.springcore.annotationbeans;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Customer {
+	
+	private int id;
+	private String name;
+	private double salary;
+	
+	
+	
+	public Customer(int id, String name, double salary) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.salary = salary;
+	}
+
+
+
+	public void welcomeCustomer()
+	{
+		
+		System.out.println("Annotation Based Config File");
+		System.out.println("ID is: "+id+" Name is: "+name+" Salary is: "+salary);
+	}
+}

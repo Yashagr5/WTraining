@@ -1,0 +1,5 @@
+# Created at 2025-08-16T16:46:35.025
+Boot Manifest-JAR contains absolute paths in classpath 'F:\Projects\Wipro_batch-1\SpringFramework\SpringCore\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+

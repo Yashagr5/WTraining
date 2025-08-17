@@ -1,0 +1,132 @@
+<!-- create a simple restaurant menu management system where restaurant owner can add , view , update and delete menu items . -->
+<!-- input items can item name , item description , category ,price and availability(available / unavailable) add it in a local storage
+   or array  , then display  when you edit values will be pre filled and you can update after confirmation , simulated api calls with promises -- apicreateitem(), apigetAllitems() , -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu Management System</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="Restaurent.css" />
+  </head>
+  <body class="bg-info-subtle">
+    <header>
+      <nav>
+        <ul>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Destinations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Offers & Promotions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Reward Program</a>
+          </li>
+          <li>
+            <img
+              style="width: 80px; height: 80px"
+              src="Hotel_logo.png"
+              alt="Hotel Logo"
+            />
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Our Brands</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Sustainability</a>
+          </li>
+          <li>
+            <button type="button" class="btn btn-outline-dark">Sign in</button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-outline-dark">Book Now</button>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <section class="container">
+      <h1>Restaurant Menu Management</h1>
+      <div class="add-item"></div>
+      <h2>Add Menu Item</h2>
+      <form id="addForm">
+        <label for="itemName">ItemName:</label>
+        <input type="text" id="itemName" required />
+        <label for="itemDescription">itemDescription:</label>
+        <input type="text" id="itemDescription" required />
+        <label for="category">Category:</label>
+        <input type="text" id="category" required />
+        <label for="itemPrice">ItemPrice:</label>
+        <input type="number" id="itemPrice" required />
+        <button type="submit" class="saveChangesBtn btn btn-outline-success">
+          Add Item
+        </button>
+        <div    
+          class="btn-group"
+          role="group"
+          aria-label="Basic radio toggle button group"
+        >
+          <input
+            type="radio"
+            class="btn-check"
+            name="btnradio"
+            id="btnradio1"
+            autocomplete="off"
+            checked
+          />
+          <label class="btn btn-outline-primary" for="btnradio1"
+            >Available</label
+          >
+
+          <input
+            type="radio"
+            class="btn-check"
+            name="btnradio"
+            id="btnradio2"
+            autocomplete="off"
+          />
+          <label class="btn btn-outline-primary" for="btnradio2"
+            >Unavailable</label
+          >
+        </div>
+      </form>
+      <div class="menu-list">
+        <h2>Menu Items</h2>
+        <ul id="menuItems"></ul>
+      </div>
+      <div class="modal" id="editModal">
+        <div class="modal-content">
+          <h2>Edit Menu Item</h2>
+          <label for="editItemName">Item Name:</label>
+          <input type="text" id="editItemName" />
+          <label for="editItemDescription">Item Description:</label>
+          <input type="text" id="editItemDescription" required />
+          <label for="editCategory">Category:</label>
+          <input type="text" id="editCategory" required />
+          <label for="editItemPrice">Item Price:</label>
+          <input type="number" id="editItemPrice" />
+          <button type="button" class="btn btn-outline-dark" id="saveChangesBtn">Save Changes</button>
+          <button type="button" class="btn btn-outline-dark" id="closeModalBtn">Close</button>
+        </div>
+      </div>
+    </section>
+    <footer class="bg-dark text-white text-center">
+      &copy; 2025 Menu Management System . All Rights Reserved.
+    </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+      crossorigin="anonymous"
+    ></script>
+      <script src="Restaurent.js"></script>
+  </body>
+</html>

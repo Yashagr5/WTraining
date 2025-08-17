@@ -1,0 +1,42 @@
+try {
+			CallableStatement stmt = conn.prepareCall("{call  insert_user(?,?)}");
+			System.out.println("Enter your name :");
+			String studentname = sc.next();
+			System.out.println("Enter your age :");
+			int studentage = sc.nextInt();
+			stmt.setString(1, studentname);
+			stmt.setInt(2, studentage);
+			
+			int i = stmt.executeUpdate();
+			
+			if (i>0)
+			{
+				System.out.println("Record is added");
+			}
+			else 
+			{
+				System.out.println("Record is not added");
+			}
+		
+			
+			
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+        
+        
+        DELIMITER $$
+
+CREATE PROCEDURE insert_user(IN sname varchar(20) , sage int)
+BEGIN
+	insert into student(name , age) values (sname , sage);
+   
+END $$
+
+DELIMITER ;
+
+call  insert_user("Jiya",45);

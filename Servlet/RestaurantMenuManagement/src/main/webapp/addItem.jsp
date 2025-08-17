@@ -1,0 +1,54 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<%@ page import="java.util.*, com.menu.menuItem" %>
+<%@ include file="header.jsp" %>
+
+<h3>Add New Menu Item</h3>
+<form method="post">
+    Name: <input type="text" name="name" required><br><br>
+    Description: <input type="text" name="description" required><br><br>
+    Category: <input type="text" name="category" required><br><br>
+    Price: <input type="number" step="0.01" name="price" required><br><br>
+    Availability: 
+    <select name="availability">
+        <option value="Available">Available</option>
+        <option value="Unavailable">Unavailable</option>
+    </select><br><br>
+    <input type="submit" value="Add Item">
+</form>
+
+<%
+    String name = request.getParameter("name");
+    if (name != null) {
+        String description = request.getParameter("description");
+        String category = request.getParameter("category");
+        double price = Double.parseDouble(request.getParameter("price"));
+        String availability = request.getParameter("availability");
+
+        menuItem item = new menuItem(name, description, category, price, availability);
+
+        List<menuItem> menu = (List<menuItem>) application.getAttribute("menu");
+        if (menu == null) {
+            menu = new ArrayList<>();
+        }
+
+        menu.add(item);
+        application.setAttribute("menu", menu);
+
+        out.println("<p style='color:green;'>Item added successfully!</p>");
+    }
+%>
+
+<a href="index.jsp">Back to Home</a>
+
+<%@ include file="footer.jsp" %>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="Signup_Page.css">
+</head>
+<body>
+    <div class="signup-container">
+        <form class="signup-form">
+            <h2>Sign up</h2>
+            <p>Create an account or <a href="Login_Page.html">Sign in</a></p>
+
+            <label for="email">Email address</label>
+            <input type="email" id="email" placeholder="Email address" required>
+
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Username" required>
+
+            <label for="password">Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="password" placeholder="Password" required>
+                <span class="toggle-password">&#128065;</span>
+            </div>
+
+            <!-- <label class="checkbox-container">
+                <input type="checkbox" id="promo">
+                I do not want to receive emails with advertising, news, suggestions or marketing promotions
+            </label> -->
+
+            <button type="submit" class="signup-btn">Sign up</button>
+
+            <!-- <p class="terms">
+                By signing up to create an account, you are accepting our
+                <a href="#">terms of service</a> and <a href="#">privacy policy</a>.
+            </p> -->
+        </form>
+    </div>
+</body>
+</html>

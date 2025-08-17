@@ -1,0 +1,9 @@
+INDEX VERSION 1.134
+F:\Projects\Servlet\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1070660789.index
+\RestaurantMenuManagement\src\main\java
+F:\Projects\Servlet\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\238934783.index
+\JspServlet\src\main\java
+F:\Projects\Servlet\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\4282261005.index
+\LoanPortal\src\main\java
+F:\Projects\Servlet\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1421621108.index
+\OnlineShopping3\src\main\java

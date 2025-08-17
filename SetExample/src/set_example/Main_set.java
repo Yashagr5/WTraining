@@ -81,3 +81,4 @@ public class Main_set {
           int salary = sc.nextInt();
           emp.add(new EmployeeSet(id,name,salary));
 }
+}

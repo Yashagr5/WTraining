@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial- scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="button">Click Me</button>
+    <div id="info"></div>
+    <script>
+      document.getElementById("button").addEventListener("click", function () {
+        info.innerHTML = `<p><a href="Assignment3.html">Yash Agrawal</a></p>`;
+      });
+    </script>
+  </body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="loadbtn">Click Here</button>
+    <div id="user-info"></div>
+
+    <script>  
+      document.getElementById("loadbtn").addEventListener("click", function () {
+        fetch("https://randomuser.me/api/")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            const user = data.results[0];
+            const fullName = `${user.name.title} ${user.name.first} ${user.name.last}`;
+            const email = user.email;
+            const picture = user.picture.large;
+
+            const userInfoDiv = document.getElementById("user-info");
+            userInfoDiv.innerHTML = `
+                <p><strong>Name:</strong> ${fullName}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <img src="${picture}" alt="Profile Picture">
+            `;
+          });
+      });
+    </script>
+  </body>
+</html> -->

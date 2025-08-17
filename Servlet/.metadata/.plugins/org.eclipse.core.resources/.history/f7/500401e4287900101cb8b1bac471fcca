@@ -1,0 +1,15 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Loan Portal</title>
+</head>
+<body>
+<header>
+<h1> Bank Loan Application Portal</h1>
+<hr>
+</header>
+</body>
+</html>

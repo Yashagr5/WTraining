@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Restaurant Menu Management</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="Restaurent.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-info-subtle">
+  <!-- LOGIN FORM -->
+  <form action="FirstServlet" method="post" class="bg-light p-4 mb-4">
+    <h2>Login to Manage Menu</h2>
+    <label>User Name:</label>
+    <input type="text" name="txt1" required />
+    <label>Password:</label>
+    <input type="password" name="txt2" required />
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+
+  <!-- MAIN MENU UI (VISIBLE AFTER LOGIN) -->
+  <header>
+      <nav>
+        <ul>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Destinations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Offers & Promotions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Reward Program</a>
+          </li>
+          <li>
+            <img
+              style="width: 80px; height: 80px"
+              src="Hotel_logo.png"
+              alt="Hotel Logo"
+            />
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Our Brands</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Sustainability</a>
+          </li>
+          <li>
+            <button type="button" class="btn btn-outline-dark">Sign in</button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-outline-dark">Book Now</button>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <section class="container">
+      <h1>Restaurant Menu Management</h1>
+      <div class="add-item"></div>
+      <h2>Add Menu Item</h2>
+      <form id="addForm">
+        <label for="itemName">ItemName:</label>
+        <input type="text" id="itemName" required />
+        <label for="itemDescription">itemDescription:</label>
+        <input type="text" id="itemDescription" required />
+        <label for="category">Category:</label>
+        <input type="text" id="category" required />
+        <label for="itemPrice">ItemPrice:</label>
+        <input type="number" id="itemPrice" required />
+        <button type="submit" class="saveChangesBtn btn btn-outline-success">
+          Add Item
+        </button>
+        <div    
+          class="btn-group"
+          role="group"
+          aria-label="Basic radio toggle button group"
+        >
+          <input
+            type="radio"
+            class="btn-check"
+            name="btnradio"
+            id="btnradio1"
+            autocomplete="off"
+            checked
+          />
+          <label class="btn btn-outline-primary" for="btnradio1"
+            >Available</label
+          >
+
+          <input
+            type="radio"
+            class="btn-check"
+            name="btnradio"
+            id="btnradio2"
+            autocomplete="off"
+          />
+          <label class="btn btn-outline-primary" for="btnradio2"
+            >Unavailable</label
+          >
+        </div>
+      </form>
+      <div class="menu-list">
+        <h2>Menu Items</h2>
+        <ul id="menuItems"></ul>
+      </div>
+      <div class="modal" id="editModal">
+        <div class="modal-content">
+          <h2>Edit Menu Item</h2>
+          <label for="editItemName">Item Name:</label>
+          <input type="text" id="editItemName" />
+          <label for="editItemDescription">Item Description:</label>
+          <input type="text" id="editItemDescription" required />
+          <label for="editCategory">Category:</label>
+          <input type="text" id="editCategory" required />
+          <label for="editItemPrice">Item Price:</label>
+          <input type="number" id="editItemPrice" />
+          <button type="button" class="btn btn-outline-dark" id="saveChangesBtn">Save Changes</button>
+          <button type="button" class="btn btn-outline-dark" id="closeModalBtn">Close</button>
+        </div>
+      </div>
+    </section>
+    <footer class="bg-dark text-white text-center">
+      &copy; 2025 Menu Management System . All Rights Reserved.
+    </footer>
+<script src="Restaurent.js"></script>
+</body>
+</html>

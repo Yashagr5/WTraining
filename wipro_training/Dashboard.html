@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        height: 100%;
+        font-family: Arial, sans-serif;
+        background-image: url("Image.jpg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+      }
+
+      /* Navbar styling */
+      .navbar {
+        position: absolute;
+        top: 20px;
+        left: 40px;
+        z-index: 2;
+        color: antiquewhite;
+      }
+
+      .navbar ul {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+      }
+
+      .navbar a {
+        color: #ccc;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        letter-spacing: 1px;
+      }
+
+      .navbar a:hover {
+        color: white;
+      }
+
+      /* Banner styling */
+      .banner {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      .banner::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Dark overlay for better contrast */
+        z-index: 1;
+      }
+
+      .banner h1 {
+        color: white;
+        font-size: 48px;
+        z-index: 2;
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <ul>
+        <li>HOME</li>
+        <li>ABOUT</li>
+        <li>PORTFOLIO</li>
+        <li>SERVICES</li>
+        <li>CONTACT</li>
+      </ul>
+    </div>
+    <div class="banner">
+      <h1>Banner Text</h1>
+      <br />
+      <button
+        style="width: 150px; height: 50px; color: black; border: 2px solid red"
+        type="submit"
+      >
+        Contact Us
+      </button>
+    </div>
+  </body>
+</html>
