@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Store - User Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🏪 Play Store</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <ul class="sidebar-nav">
+                <li><a href="#" class="active" onclick="showAllApps()">All Apps</a></li>
+                <li><a href="#" onclick="showInstalledApps()">Installed Apps</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <div id="alertContainer"></div>
+
+            <div class="filters">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search apps..." onkeyup="handleSearch()">
+                </div>
+                <div class="category-filter">
+                    <select id="categoryFilter" onchange="handleCategoryFilter()">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+            </div>
+
+            <div id="loadingContainer" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Loading apps...</p>
+            </div>
+
+            <div id="appsContainer">
+                <div class="app-grid" id="appGrid">
+                    <!-- Apps will be loaded here -->
+                </div>
+            </div>
+
+            <div id="noAppsMessage" class="text-center hidden">
+                <h3>No apps found</h3>
+                <p>Try adjusting your search or filter criteria.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = ''; // Use relative URLs since we're served from the same origin
+        let currentUser = null;
+        let allApps = [];
+        let installedApps = [];
+        let categories = [];
+        let currentView = 'all';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadCategories();
+            loadAllApps();
+        });
+
+        function checkAuthentication() {
+            const token = localStorage.getItem('token');
+            const userType = localStorage.getItem('userType');
+            const username = localStorage.getItem('username');
+            const userId = localStorage.getItem('userId');
+
+            if (!token || userType !== 'user') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            currentUser = {
+                id: userId,
+                username: username,
+                token: token
+            };
+            
+            console.log('User authenticated:', currentUser);
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        function showLoading() {
+            document.getElementById('loadingContainer').classList.remove('hidden');
+            document.getElementById('appGrid').innerHTML = '';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingContainer').classList.add('hidden');
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        async function makeRequest(method, url, data = null, useAuth = false) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+
+            if (useAuth && currentUser.token) {
+                options.headers['Authorization'] = `Bearer ${currentUser.token}`;
+            }
+
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+
+            try {
+                const response = await fetch(url, options);
+                
+                // Check if response has content before trying to parse JSON
+                const contentType = response.headers.get('content-type');
+                let result = null;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    const text = await response.text();
+                    if (text.trim()) {
+                        result = JSON.parse(text);
+                    }
+                } else {
+                    // For non-JSON responses or empty responses, create a simple result object
+                    result = { success: response.ok, status: response.status };
+                }
+                
+                if (!response.ok) {
+                    throw new Error((result && result.message) || `HTTP ${response.status}: Request failed`);
+                }
+                
+                return result;
+            } catch (error) {
+                console.error('Request failed:', error);
+                throw error;
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await makeRequest('GET', `${API_BASE}/api/categories`);
+                categories = response.data || response;
+                
+                const categoryFilter = document.getElementById('categoryFilter');
+                categoryFilter.innerHTML = '<option value="">All Categories</option>';
+                
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    categoryFilter.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load categories:', error);
+            }
+        }
+
+        async function loadAllApps() {
+            showLoading();
+            try {
+                const response = await makeRequest('GET', `${API_BASE}/api/apps`);
+                allApps = response.data || response;
+                
+                // Load user's installed apps
+                await loadInstalledApps();
+                
+                if (currentView === 'all') {
+                    displayApps(allApps);
+                }
+            } catch (error) {
+                showAlert(`Failed to load apps: ${error.message}`, 'error');
+                console.error('Failed to load apps:', error);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadInstalledApps() {
+            try {
+                console.log('Loading installed apps for user ID:', currentUser.id);
+                const response = await makeRequest('GET', `${API_BASE}/api/downloads/user/${currentUser.id}`, null, true);
+                
+                // Handle different response structures
+                let downloads = null;
+                if (response && response.data) {
+                    downloads = response.data;
+                } else if (Array.isArray(response)) {
+                    downloads = response;
+                } else {
+                    downloads = [];
+                }
+                
+                console.log('Downloads response structure:', response);
+                console.log('Processed downloads:', downloads);
+                console.log('Current user ID:', currentUser.id);
+                
+                if (downloads && Array.isArray(downloads) && downloads.length > 0) {
+                    // Extract app IDs from downloads - backend uses 'applicationId'
+                    const installedAppIds = downloads.map(download => {
+                        return download.applicationId || download.appId || download.app_id || download.id;
+                    }).filter(id => id !== undefined);
+                    
+                    console.log('Installed app IDs:', installedAppIds);
+                    installedApps = allApps.filter(app => installedAppIds.includes(app.id));
+                    console.log('Filtered installed apps:', installedApps);
+                } else {
+                    console.log('No downloads found for user');
+                    installedApps = [];
+                }
+            } catch (error) {
+                console.error('Failed to load installed apps:', error);
+                console.error('Error details:', error.message);
+                installedApps = [];
+            }
+        }
+
+        function displayApps(apps) {
+            const appGrid = document.getElementById('appGrid');
+            const noAppsMessage = document.getElementById('noAppsMessage');
+            
+            if (!apps || apps.length === 0) {
+                appGrid.innerHTML = '';
+                noAppsMessage.classList.remove('hidden');
+                return;
+            }
+            
+            noAppsMessage.classList.add('hidden');
+            
+            appGrid.innerHTML = apps.map(app => {
+                const isInstalled = installedApps.some(installedApp => installedApp.id === app.id);
+                const category = categories.find(cat => cat.id === app.categoryId);
+                
+                return `
+                    <div class="app-card" onclick="openAppDetails(${app.id})">
+                        <h3>${app.name}</h3>
+                        <p>${app.description}</p>
+                        <div class="app-meta">
+                            <span>Category: ${category ? category.name : 'Unknown'}</span>
+                            <div class="app-rating">
+                                <span class="stars">⭐</span>
+                                <span>${app.rating || 0}/5</span>
+                            </div>
+                        </div>
+                        <div class="app-meta">
+                            <span>Downloads: ${app.downloadCount || 0}</span>
+                            <span>Size: ${app.sizeMb || 0} MB</span>
+                        </div>
+                        <div class="app-actions">
+                            ${isInstalled ? 
+                                '<span class="btn btn-secondary">Installed</span>' : 
+                                `<button class="btn btn-primary" onclick="event.stopPropagation(); downloadApp(${app.id})">Download</button>`
+                            }
+                            <button class="btn btn-outline" onclick="event.stopPropagation(); openAppDetails(${app.id})">View Details</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showAllApps() {
+            currentView = 'all';
+            document.querySelectorAll('.sidebar-nav a').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+            displayApps(allApps);
+        }
+
+        function showInstalledApps() {
+            currentView = 'installed';
+            document.querySelectorAll('.sidebar-nav a').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+            displayApps(installedApps);
+        }
+
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryId = document.getElementById('categoryFilter').value;
+            
+            let appsToFilter = currentView === 'all' ? allApps : installedApps;
+            
+            let filteredApps = appsToFilter.filter(app => {
+                const matchesSearch = !searchTerm || 
+                    app.name.toLowerCase().includes(searchTerm) || 
+                    app.description.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !categoryId || app.categoryId == categoryId;
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            displayApps(filteredApps);
+        }
+
+        function handleCategoryFilter() {
+            handleSearch(); // Reuse search logic
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            displayApps(currentView === 'all' ? allApps : installedApps);
+        }
+
+        async function downloadApp(appId) {
+            try {
+                showAlert('Starting download...', 'info');
+                
+                const downloadData = {
+                    appId: appId,
+                    userId: parseInt(currentUser.id)
+                };
+                
+                await makeRequest('POST', `${API_BASE}/api/downloads/track`, downloadData, true);
+                
+                // Increment download count
+                await makeRequest('PUT', `${API_BASE}/api/apps/${appId}/increment-download`);
+                
+                showAlert('App downloaded successfully!', 'success');
+                
+                // Refresh apps to update download count and installed status
+                await loadAllApps();
+                
+            } catch (error) {
+                showAlert(`Download failed: ${error.message}`, 'error');
+                console.error('Download failed:', error);
+            }
+        }
+
+        function openAppDetails(appId) {
+            // Store the app ID for the details page
+            localStorage.setItem('selectedAppId', appId);
+            window.location.href = 'app-details.html';
+        }
+
+        // Search on Enter key
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && event.target.id === 'searchInput') {
+                handleSearch();
+            }
+        });
+    </script>
+</body>
+</html>

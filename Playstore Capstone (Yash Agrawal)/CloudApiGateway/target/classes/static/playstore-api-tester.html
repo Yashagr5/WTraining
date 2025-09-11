@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Store API Tester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .nav-tab.active {
+            background: #4CAF50;
+            color: white;
+            border-bottom: 3px solid #45a049;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .section h3 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .response-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .response-container h4 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .response-container pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-working {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-not-tested {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .auth-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .auth-info h4 {
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+
+        .test-data {
+            background: #f0f8f0;
+            border: 1px solid #c3e6c3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .test-data h4 {
+            color: #2d7d32;
+            margin-bottom: 10px;
+        }
+
+        .endpoint-url {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4CAF50;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            border-color: #4CAF50;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .category-card.selected {
+            border-color: #4CAF50;
+            background: #f0f8f0;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+            margin-top: 15px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .nav-tab {
+                flex: 1;
+                min-width: 120px;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Play Store API Tester</h1>
+            <p>Comprehensive testing interface for all Play Store microservices endpoints</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('auth')">Authentication</button>
+            <button class="nav-tab" onclick="showTab('categories')">Categories</button>
+            <button class="nav-tab" onclick="showTab('apps')">App Management</button>
+            <button class="nav-tab" onclick="showTab('search')">Search & Discovery</button>
+            <button class="nav-tab" onclick="showTab('comments')">Comments</button>
+            <button class="nav-tab" onclick="showTab('downloads')">Downloads</button>
+            <button class="nav-tab" onclick="showTab('notifications')">Notifications</button>
+        </div>
+
+        <!-- Authentication Tab -->
+        <div id="auth" class="tab-content active">
+            <div class="auth-info">
+                <h4>🔐 Authentication Info</h4>
+                <p>JWT tokens are required for protected endpoints. Login to get your token.</p>
+                <p><strong>Base URL:</strong> http://localhost:8989</p>
+            </div>
+
+            <div class="test-data">
+                <h4>📋 Test Data Available</h4>
+                <p><strong>Pre-loaded Users (password: password123):</strong></p>
+                <ul>
+                    <li>Username: <code>john_doe</code>, Email: <code>john@example.com</code></li>
+                    <li>Username: <code>jane_smith</code>, Email: <code>jane@example.com</code></li>
+                </ul>
+                <p><strong>Pre-loaded Owners (password: password123):</strong></p>
+                <ul>
+                    <li>Owner: <code>techcorp_admin</code>, Email: <code>admin@techcorp.com</code></li>
+                    <li>Owner: <code>gamestudio_dev</code>, Email: <code>contact@gamestudio.com</code></li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h3>👤 User Authentication <span class="status-indicator status-working">✅ WORKING</span></h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>User Registration</label>
+                        <div class="endpoint-url">POST /api/users/register</div>
+                        <input type="text" id="userRegUsername" placeholder="Username" value="testuser">
+                        <input type="password" id="userRegPassword" placeholder="Password" value="password123">
+                        <input type="email" id="userRegEmail" placeholder="Email" value="test@example.com">
+                        <input type="text" id="userRegFullName" placeholder="Full Name" value="Test User">
+                        <input type="text" id="userRegPhone" placeholder="Phone" value="1234567890">
+                        <button class="btn btn-primary" onclick="registerUser()">Register User</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>User Login</label>
+                        <div class="endpoint-url">POST /api/users/login</div>
+                        <input type="text" id="userLoginUsername" placeholder="Username or Email" value="john_doe">
+                        <input type="password" id="userLoginPassword" placeholder="Password" value="password123">
+                        <button class="btn btn-primary" onclick="loginUser()">Login User</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🏢 Owner Authentication <span class="status-indicator status-working">✅ WORKING</span></h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Owner Registration</label>
+                        <div class="endpoint-url">POST /api/owners/register</div>
+                        <input type="text" id="ownerRegName" placeholder="Owner Name" value="testowner">
+                        <input type="password" id="ownerRegPassword" placeholder="Password" value="password123">
+                        <input type="email" id="ownerRegEmail" placeholder="Email" value="owner@example.com">
+                        <input type="text" id="ownerRegPhone" placeholder="Phone" value="9876543210">
+                        <input type="text" id="ownerRegCompany" placeholder="Company Name" value="Test Company">
+                        <input type="text" id="ownerRegAddress" placeholder="Business Address" value="123 Test Street">
+                        <input type="text" id="ownerRegType" placeholder="Business Type" value="Software">
+                        <button class="btn btn-primary" onclick="registerOwner()">Register Owner</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Owner Login</label>
+                        <div class="endpoint-url">POST /api/owners/login</div>
+                        <input type="text" id="ownerLoginUsername" placeholder="Username or Email" value="techcorp_admin">
+                        <input type="password" id="ownerLoginPassword" placeholder="Password" value="password123">
+                        <button class="btn btn-primary" onclick="loginOwner()">Login Owner</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🔑 Current Session</h3>
+                <div class="form-group">
+                    <label>JWT Token (automatically set after login)</label>
+                    <textarea id="jwtToken" rows="3" placeholder="JWT token will appear here after login"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Logged in as</label>
+                        <input type="text" id="currentUser" readonly placeholder="User info will appear here">
+                    </div>
+                    <div class="form-group">
+                        <label>User/Owner ID</label>
+                        <input type="text" id="currentUserId" readonly placeholder="ID will appear here">
+                    </div>
+                </div>
+            </div>
+
+            <div id="authResponse" class="response-container" style="display: none;">
+                <h4>Response</h4>
+                <pre id="authResponseContent"></pre>
+            </div>
+        </div>
+
+        <!-- Categories Tab -->
+        <div id="categories" class="tab-content">
+            <div class="section">
+                <h3>📂 Category Management <span class="status-indicator status-working">✅ WORKING</span></h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Get All Categories</label>
+                        <div class="endpoint-url">GET /api/categories</div>
+                        <button class="btn btn-primary" onclick="getAllCategories()">Get Categories</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Get Category by ID</label>
+                        <div class="endpoint-url">GET /api/categories/{id}</div>
+                        <input type="number" id="categoryId" placeholder="Category ID" value="1">
+                        <button class="btn btn-primary" onclick="getCategoryById()">Get Category</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Create Category</label>
+                    <div class="endpoint-url">POST /api/categories</div>
+                    <div class="form-row">
+                        <input type="text" id="categoryName" placeholder="Category Name" value="Test Category">
+                        <input type="text" id="categoryDesc" placeholder="Description" value="Test category description">
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="categoryAppCount" placeholder="App Count" value="0">
+                        <select id="categoryFeatured">
+                            <option value="true">Featured</option>
+                            <option value="false">Not Featured</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="createCategory()">Create Category</button>
+                </div>
+            </div>
+
+            <div id="categoriesResponse" class="response-container" style="display: none;">
+                <h4>Response</h4>
+                <pre id="categoriesResponseContent"></pre>
+            </div>
+        </div>
+
+        <!-- Apps Tab -->
+        <div id="apps" class="tab-content">
+            <div class="section">
+                <h3>📱 App Management <span class="status-indicator status-working">✅ WORKING</span></h3>
+                
+                <div class="form-group">
+                    <label>Create App</label>
+                    <div class="endpoint-url">POST /api/apps</div>
+                    <div class="form-row">
+                        <input type="text" id="appName" placeholder="App Name" value="Amazing Game">
+                        <input type="text" id="appVersion" placeholder="Version" value="1.0.0">
+                    </div>
+                    <textarea id="appDescription" rows="3" placeholder="App Description">This is an amazing puzzle game for all ages</textarea>
+                    <div class="form-row">
+                        <input type="number" id="appCategoryId" placeholder="Category ID" value="1">
+                        <input type="number" id="appOwnerId" placeholder="Owner ID" value="1">
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="appRating" placeholder="Rating" value="0" step="0.1" min="0" max="5">
+                        <input type="number" id="appDownloadCount" placeholder="Download Count" value="0">
+                        <input type="number" id="appSizeMb" placeholder="Size (MB)" value="50.5" step="0.1">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="appIconUrl" placeholder="Icon URL" value="https://example.com/icon.png">
+                        <input type="text" id="appApkUrl" placeholder="APK URL" value="https://example.com/game.apk">
+                    </div>
+                    <div class="form-row">
+                        <select id="appVisible">
+                            <option value="true">Visible</option>
+                            <option value="false">Hidden</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="createApp()">Create App</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Get All Apps</label>
+                    <div class="endpoint-url">GET /api/apps</div>
+                    <button class="btn btn-primary" onclick="getAllApps()">Get All Apps</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Get App by ID</label>
+                        <div class="endpoint-url">GET /api/apps/{id}</div>
+                        <input type="number" id="getAppId" placeholder="App ID" value="1">
+                        <button class="btn btn-primary" onclick="getAppById()">Get App</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Get Apps by Owner</label>
+                        <div class="endpoint-url">GET /api/apps/owner/{ownerId}</div>
+                        <input type="number" id="getAppOwnerId" placeholder="Owner ID" value="1">
+                        <button class="btn btn-primary" onclick="getAppsByOwner()">Get Owner Apps</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Update App</label>
+                    <div class="endpoint-url">PUT /api/apps/{id}</div>
+                    <div class="form-row">
+                        <input type="number" id="updateAppId" placeholder="App ID to Update" value="1">
+                        <input type="text" id="updateAppName" placeholder="New App Name" value="Amazing Game Updated">
+                    </div>
+                    <textarea id="updateAppDescription" rows="2" placeholder="Updated Description">Updated description with new features</textarea>
+                    <div class="form-row">
+                        <input type="text" id="updateAppVersion" placeholder="New Version" value="1.1.0">
+                        <select id="updateAppStatus">
+                            <option value="Active">Active (Visible)</option>
+                            <option value="Hidden">Hidden (Invisible)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="updateAppCategoryId" placeholder="Category ID" value="1">
+                        <input type="number" id="updateAppOwnerId" placeholder="Owner ID" value="1">
+                        <input type="number" id="updateAppRating" placeholder="Rating" value="4.5" step="0.1">
+                    </div>
+                    <button class="btn btn-primary" onclick="updateApp()">Update App</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Delete App</label>
+                        <div class="endpoint-url">DELETE /api/apps/{id}</div>
+                        <input type="number" id="deleteAppId" placeholder="App ID to Delete">
+                        <button class="btn btn-danger" onclick="deleteApp()">Delete App</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Increment Download Count</label>
+                        <div class="endpoint-url">PUT /api/apps/{id}/increment-download</div>
+                        <input type="number" id="incrementAppId" placeholder="App ID" value="1">
+                        <button class="btn btn-secondary" onclick="incrementDownload()">Increment Download</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="appsResponse" class="response-container" style="display: none;">
+                <h4>Response</h4>
+                <pre id="appsResponseContent"></pre>
+            </div>
+        </div>
+
+        <!-- Search Tab -->
+        <div id="search" class="tab-content">
+            <div class="section">
+                <h3>🔍 Search & Discovery</h3>
+                
+                <div class="form-group">
+                    <label>Simple Search <span class="status-indicator status-working">✅ WORKING</span></label>
+                    <div class="endpoint-url">GET /api/apps/search?keyword={keyword}</div>
+                    <input type="text" id="searchKeyword" placeholder="Search keyword" value="game">
+                    <button class="btn btn-primary" onclick="simpleSearch()">Search Apps</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Search by Category <span class="status-indicator status-working">✅ WORKING</span></label>
+                    <div class="endpoint-url">GET /api/apps/search/category/{categoryId}</div>
+                    <div class="category-grid">
+                        <div class="category-card" onclick="selectCategory(1, this)">
+                            <strong>Games (ID: 1)</strong><br>
+                            <small>e.g., Candy Crush Saga</small>
+                        </div>
+                        <div class="category-card" onclick="selectCategory(2, this)">
+                            <strong>Social (ID: 2)</strong><br>
+                            <small>e.g., WhatsApp, Instagram</small>
+                        </div>
+                        <div class="category-card" onclick="selectCategory(3, this)">
+                            <strong>Productivity (ID: 3)</strong><br>
+                            <small>e.g., Microsoft Office</small>
+                        </div>
+                        <div class="category-card" onclick="selectCategory(4, this)">
+                            <strong>Health & Fitness (ID: 4)</strong><br>
+                            <small>e.g., MyFitnessPal</small>
+                        </div>
+                        <div class="category-card" onclick="selectCategory(5, this)">
+                            <strong>Education (ID: 5)</strong><br>
+                            <small>e.g., Duolingo</small>
+                        </div>
+                        <div class="category-card" onclick="selectCategory(10, this)">
+                            <strong>Music & Audio (ID: 10)</strong><br>
+                            <small>e.g., Spotify Music</small>
+                        </div>
+                    </div>
+                    <input type="number" id="searchCategoryId" placeholder="Category ID" value="2">
+                    <input type="number" id="searchCategoryLimit" placeholder="Limit (default: 20)" value="20">
+                    <button class="btn btn-primary" onclick="searchByCategory()">Search by Category</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Advanced Search <span class="status-indicator status-partial">⚠️ NEEDS TESTING</span></label>
+                    <div class="endpoint-url">GET /api/apps/search/advanced</div>
+                    <div class="form-row">
+                        <input type="text" id="advSearchName" placeholder="App Name" value="game">
+                        <input type="number" id="advSearchCategoryId" placeholder="Category ID" value="1">
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="advSearchMinRating" placeholder="Min Rating" value="4.0" step="0.1">
+                        <input type="number" id="advSearchMaxPrice" placeholder="Max Price" value="10">
+                    </div>
+                    <button class="btn btn-primary" onclick="advancedSearch()">Advanced Search</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Trending Apps <span class="status-indicator status-working">✅ WORKING</span></label>
+                    <div class="endpoint-url">GET /api/apps/search/trending</div>
+                    <div class="form-row">
+                        <input type="number" id="trendingLimit" placeholder="Limit" value="10">
+                        <input type="number" id="trendingDays" placeholder="Days" value="7">
+                    </div>
+                    <button class="btn btn-primary" onclick="getTrendingApps()">Get Trending Apps</button>
+                </div>
+            </div>
+
+            <div id="searchResponse" class="response-container" style="display: none;">
+                <h4>Response</h4>
+                <pre id="searchResponseContent"></pre>
+            </div>
+        </div>
+
+        <!-- Comments Tab -->
+        <div id="comments" class="tab-content">
+            <div class="section">
+                <h3>💬 Comments & Reviews <span class="status-indicator status-not-tested">⚠️ NOT TESTED</span></h3>
+                
+                <div class="form-group">
+                    <label>Add Comment/Review</label>
+                    <div class="endpoint-url">POST /api/comments</div>
+                    <div class="form-row">
+                        <input type="number" id="commentAppId" placeholder="App ID" value="1">
+                        <input type="number" id="commentUserId" placeholder="User ID" value="1">
+                        <input type="number" id="commentRating" placeholder="Rating (1-5)" value="5" min="1" max="5">
+                    </div>
+                    <textarea id="commentDescription" rows="3" placeholder="Review description">Great app! Very useful and well designed.</textarea>
+                    <button class="btn btn-primary" onclick="addComment()">Add Comment</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Get Comments for App</label>
+                        <div class="endpoint-url">GET /api/comments/app/{id}</div>
+                        <input type="number" id="getCommentsAppId" placeholder="App ID" value="1">
+                        <button class="btn btn-primary" onclick="getCommentsForApp()">Get App Comments</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Get Comments by User</label>
+                        <div class="endpoint-url">GET /api/comments/user/{id}</div>
+                        <input type="number" id="getCommentsUserId" placeholder="User ID" value="1">
+                        <button class="btn btn-primary" onclick="getCommentsByUser()">Get User Comments</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Get Comments for Owner's Apps</label>
+                    <div class="endpoint-url">GET /api/comments/owner/{ownerId}/apps</div>
+                    <input type="number" id="getCommentsOwnerId" placeholder="Owner ID" value="1">
+                    <button class="btn btn-primary" onclick="getCommentsForOwnerApps()">Get Owner App Comments</button>
+                </div>
+            </div>
+
+            <div id="commentsResponse" class="response-container" style="display: none;">
+                <h4>Response</h4>
+                <pre id="commentsResponseContent"></pre>
+            </div>
+        </div>
+
+        <!-- Downloads Tab -->
+        <div id="downloads" class="tab-content">
+            <div class="section">
+                <h3>⬇️ Download Tracking <span class="status-indicator status-working">✅ WORKING</span></h3>
+                
+                <div class="form-group">
+                    <label>Track Download</label>
+                    <div class="endpoint-url">POST /api/downloads/track</div>
+                    <div class="form-row">
+                        <input type="number" id="trackAppId" placeholder="App ID" value="1">
+                        <input type="number" id="trackUserId" placeholder="User ID" value="1">
+                    </div>
+                    <button class="btn btn-primary" onclick="trackDownload()">Track Download</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Get Download Count for App</label>
+                        <div class="endpoint-url">GET /api/downloads/app/{id}/count</div>
+                        <input type="number" id="downloadCountAppId" placeholder="App ID" value="1">
+                        <button class="btn btn-primary" onclick="getDownloadCount()">Get Download Count</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Get User's Download History</label>
+                        <div class="endpoint-url">GET /api/downloads/user/{id}</div>
+                        <input type="number" id="downloadHistoryUserId" placeholder="User ID" value="1">
+                        <button class="btn btn-primary" onclick="getUserDownloadHistory()">Get Download History</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Get Download Statistics for Owner</label>
+                    <div class="endpoint-url">GET /api/downloads/owner/{id}/stats</div>
+                    <input type="number" id="downloadStatsOwnerId" placeholder="Owner ID" value="1">
+                    <button class="btn btn-primary" onclick="getOwnerDownloadStats()">Get Owner Stats</button>
+                </div>
+            </div>
+
+            <div id="downloadsResponse" class="response-container" style="display: none;">
+                <h4>Response</h4>
+                <pre id="downloadsResponseContent"></pre>
+            </div>
+        </div>
+
+        <!-- Notifications Tab -->
+        <div id="notifications" class="tab-content">
+            <div class="section">
+                <h3>🔔 Notifications <span class="status-indicator status-partial">⚠️ PARTIAL</span></h3>
+                
+                <div class="form-group">
+                    <label>Send App Update Notification</label>
+                    <div class="endpoint-url">POST /api/notifications/app/{id}/update</div>
+                    <div class="form-row">
+                        <input type="number" id="notifyAppId" placeholder="App ID" value="1">
+                        <input type="number" id="notifyOwnerId" placeholder="Owner ID" value="1">
+                    </div>
+                    <textarea id="notifyMessage" rows="2" placeholder="Notification message">Version 2.0 is now available with exciting new features!</textarea>
+                    <button class="btn btn-primary" onclick="sendAppUpdateNotification()">Send Update Notification</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Get Owner Notifications</label>
+                        <div class="endpoint-url">GET /api/notifications/owner/{id}</div>
+                        <input type="number" id="getNotifyOwnerId" placeholder="Owner ID" value="1">
+                        <button class="btn btn-primary" onclick="getOwnerNotifications()">Get Owner Notifications</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Get User Notifications</label>
+                        <div class="endpoint-url">GET /api/notifications/user/{id}</div>
+                        <input type="number" id="getNotifyUserId" placeholder="User ID" value="1">
+                        <button class="btn btn-primary" onclick="getUserNotifications()">Get User Notifications</button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Mark Notification as Read</label>
+                        <div class="endpoint-url">PUT /api/notifications/{id}/read</div>
+                        <input type="number" id="markReadNotifyId" placeholder="Notification ID" value="1">
+                        <button class="btn btn-secondary" onclick="markNotificationRead()">Mark as Read</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notificationsResponse" class="response-container" style="display: none;">
+                <h4>Response</h4>
+                <pre id="notificationsResponseContent"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = ''; // Use relative URLs since we're served from the same origin
+        let currentToken = '';
+        let currentUserId = '';
+        let currentUser = '';
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+        }
+
+        function selectCategory(categoryId, element) {
+            // Remove selected class from all cards
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked card
+            element.classList.add('selected');
+            
+            // Set the category ID in the input
+            document.getElementById('searchCategoryId').value = categoryId;
+        }
+
+        function showLoading(containerId) {
+            const container = document.getElementById(containerId);
+            container.style.display = 'block';
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading...</p></div>';
+        }
+
+        function showResponse(containerId, contentId, response) {
+            const container = document.getElementById(containerId);
+            const content = document.getElementById(contentId);
+            
+            container.style.display = 'block';
+            content.textContent = JSON.stringify(response, null, 2);
+        }
+
+        function showError(containerId, contentId, error) {
+            const container = document.getElementById(containerId);
+            const content = document.getElementById(contentId);
+            
+            container.style.display = 'block';
+            content.textContent = `Error: ${error.message || error}`;
+        }
+
+        async function makeRequest(method, url, data = null, useAuth = false) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+
+            if (useAuth && currentToken) {
+                options.headers['Authorization'] = `Bearer ${currentToken}`;
+            }
+
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${result.message || 'Request failed'}`);
+                }
+                
+                return result;
+            } catch (error) {
+                console.error('Request failed:', error);
+                throw error;
+            }
+        }
+
+        // Authentication Functions
+        async function registerUser() {
+            showLoading('authResponse');
+            try {
+                const data = {
+                    username: document.getElementById('userRegUsername').value,
+                    password: document.getElementById('userRegPassword').value,
+                    email: document.getElementById('userRegEmail').value,
+                    fullName: document.getElementById('userRegFullName').value,
+                    phone: document.getElementById('userRegPhone').value
+                };
+                
+                const response = await makeRequest('POST', `${API_BASE}/api/users/register`, data);
+                showResponse('authResponse', 'authResponseContent', response);
+            } catch (error) {
+                showError('authResponse', 'authResponseContent', error);
+            }
+        }
+
+        async function loginUser() {
+            showLoading('authResponse');
+            try {
+                const data = {
+                    usernameOrEmail: document.getElementById('userLoginUsername').value,
+                    password: document.getElementById('userLoginPassword').value
+                };
+                
+                const response = await makeRequest('POST', `${API_BASE}/api/users/login`, data);
+                
+                if (response.data && response.data.token) {
+                    currentToken = response.data.token;
+                    currentUserId = response.data.userId;
+                    currentUser = response.data.username;
+                    
+                    document.getElementById('jwtToken').value = currentToken;
+                    document.getElementById('currentUser').value = `User: ${currentUser}`;
+                    document.getElementById('currentUserId').value = currentUserId;
+                }
+                
+                showResponse('authResponse', 'authResponseContent', response);
+            } catch (error) {
+                showError('authResponse', 'authResponseContent', error);
+            }
+        }
+
+        async function registerOwner() {
+            showLoading('authResponse');
+            try {
+                const data = {
+                    ownerName: document.getElementById('ownerRegName').value,
+                    password: document.getElementById('ownerRegPassword').value,
+                    email: document.getElementById('ownerRegEmail').value,
+                    phone: document.getElementById('ownerRegPhone').value,
+                    companyName: document.getElementById('ownerRegCompany').value,
+                    businessAddress: document.getElementById('ownerRegAddress').value,
+                    businessType: document.getElementById('ownerRegType').value
+                };
+                
+                const response = await makeRequest('POST', `${API_BASE}/api/owners/register`, data);
+                showResponse('authResponse', 'authResponseContent', response);
+            } catch (error) {
+                showError('authResponse', 'authResponseContent', error);
+            }
+        }
+
+        async function loginOwner() {
+            showLoading('authResponse');
+            try {
+                const data = {
+                    usernameOrEmail: document.getElementById('ownerLoginUsername').value,
+                    password: document.getElementById('ownerLoginPassword').value
+                };
+                
+                const response = await makeRequest('POST', `${API_BASE}/api/owners/login`, data);
+                
+                if (response.data && response.data.token) {
+                    currentToken = response.data.token;
+                    currentUserId = response.data.ownerId;
+                    currentUser = response.data.ownerName;
+                    
+                    document.getElementById('jwtToken').value = currentToken;
+                    document.getElementById('currentUser').value = `Owner: ${currentUser}`;
+                    document.getElementById('currentUserId').value = currentUserId;
+                }
+                
+                showResponse('authResponse', 'authResponseContent', response);
+            } catch (error) {
+                showError('authResponse', 'authResponseContent', error);
+            }
+        }
+
+        // Category Functions
+        async function getAllCategories() {
+            showLoading('categoriesResponse');
+            try {
+                const response = await makeRequest('GET', `${API_BASE}/api/categories`);
+                showResponse('categoriesResponse', 'categoriesResponseContent', response);
+            } catch (error) {
+                showError('categoriesResponse', 'categoriesResponseContent', error);
+            }
+        }
+
+        async function getCategoryById() {
+            showLoading('categoriesResponse');
+            try {
+                const id = document.getElementById('categoryId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/categories/${id}`);
+                showResponse('categoriesResponse', 'categoriesResponseContent', response);
+            } catch (error) {
+                showError('categoriesResponse', 'categoriesResponseContent', error);
+            }
+        }
+
+        async function createCategory() {
+            showLoading('categoriesResponse');
+            try {
+                const data = {
+                    name: document.getElementById('categoryName').value,
+                    description: document.getElementById('categoryDesc').value,
+                    appCount: parseInt(document.getElementById('categoryAppCount').value),
+                    isFeatured: document.getElementById('categoryFeatured').value === 'true'
+                };
+                
+                const response = await makeRequest('POST', `${API_BASE}/api/categories`, data);
+                showResponse('categoriesResponse', 'categoriesResponseContent', response);
+            } catch (error) {
+                showError('categoriesResponse', 'categoriesResponseContent', error);
+            }
+        }
+
+        // App Functions
+        async function createApp() {
+            showLoading('appsResponse');
+            try {
+                const data = {
+                    name: document.getElementById('appName').value,
+                    description: document.getElementById('appDescription').value,
+                    version: document.getElementById('appVersion').value,
+                    categoryId: parseInt(document.getElementById('appCategoryId').value),
+                    ownerId: parseInt(document.getElementById('appOwnerId').value),
+                    rating: parseFloat(document.getElementById('appRating').value),
+                    downloadCount: parseInt(document.getElementById('appDownloadCount').value),
+                    sizeMb: parseFloat(document.getElementById('appSizeMb').value),
+                    isVisible: document.getElementById('appVisible').value === 'true',
+                    iconUrl: document.getElementById('appIconUrl').value,
+                    apkUrl: document.getElementById('appApkUrl').value
+                };
+                
+                const response = await makeRequest('POST', `${API_BASE}/api/apps`, data);
+                showResponse('appsResponse', 'appsResponseContent', response);
+            } catch (error) {
+                showError('appsResponse', 'appsResponseContent', error);
+            }
+        }
+
+        async function getAllApps() {
+            showLoading('appsResponse');
+            try {
+                const response = await makeRequest('GET', `${API_BASE}/api/apps`);
+                showResponse('appsResponse', 'appsResponseContent', response);
+            } catch (error) {
+                showError('appsResponse', 'appsResponseContent', error);
+            }
+        }
+
+        async function getAppById() {
+            showLoading('appsResponse');
+            try {
+                const id = document.getElementById('getAppId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/apps/${id}`);
+                showResponse('appsResponse', 'appsResponseContent', response);
+            } catch (error) {
+                showError('appsResponse', 'appsResponseContent', error);
+            }
+        }
+
+        async function getAppsByOwner() {
+            showLoading('appsResponse');
+            try {
+                const ownerId = document.getElementById('getAppOwnerId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/apps/owner/${ownerId}`);
+                showResponse('appsResponse', 'appsResponseContent', response);
+            } catch (error) {
+                showError('appsResponse', 'appsResponseContent', error);
+            }
+        }
+
+        async function updateApp() {
+            showLoading('appsResponse');
+            try {
+                const id = document.getElementById('updateAppId').value;
+                const data = {
+                    name: document.getElementById('updateAppName').value,
+                    description: document.getElementById('updateAppDescription').value,
+                    version: document.getElementById('updateAppVersion').value,
+                    categoryId: parseInt(document.getElementById('updateAppCategoryId').value),
+                    ownerId: parseInt(document.getElementById('updateAppOwnerId').value),
+                    rating: parseFloat(document.getElementById('updateAppRating').value),
+                    status: document.getElementById('updateAppStatus').value
+                };
+                
+                const response = await makeRequest('PUT', `${API_BASE}/api/apps/${id}`, data, true);
+                showResponse('appsResponse', 'appsResponseContent', response);
+            } catch (error) {
+                showError('appsResponse', 'appsResponseContent', error);
+            }
+        }
+
+        async function deleteApp() {
+            showLoading('appsResponse');
+            try {
+                const id = document.getElementById('deleteAppId').value;
+                const response = await makeRequest('DELETE', `${API_BASE}/api/apps/${id}`, null, true);
+                showResponse('appsResponse', 'appsResponseContent', response);
+            } catch (error) {
+                showError('appsResponse', 'appsResponseContent', error);
+            }
+        }
+
+        async function incrementDownload() {
+            showLoading('appsResponse');
+            try {
+                const id = document.getElementById('incrementAppId').value;
+                const response = await makeRequest('PUT', `${API_BASE}/api/apps/${id}/increment-download`);
+                showResponse('appsResponse', 'appsResponseContent', response);
+            } catch (error) {
+                showError('appsResponse', 'appsResponseContent', error);
+            }
+        }
+
+        // Search Functions
+        async function simpleSearch() {
+            showLoading('searchResponse');
+            try {
+                const keyword = document.getElementById('searchKeyword').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/apps/search?keyword=${encodeURIComponent(keyword)}`);
+                showResponse('searchResponse', 'searchResponseContent', response);
+            } catch (error) {
+                showError('searchResponse', 'searchResponseContent', error);
+            }
+        }
+
+        async function searchByCategory() {
+            showLoading('searchResponse');
+            try {
+                const categoryId = document.getElementById('searchCategoryId').value;
+                const limit = document.getElementById('searchCategoryLimit').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/apps/search/category/${categoryId}?limit=${limit}`);
+                showResponse('searchResponse', 'searchResponseContent', response);
+            } catch (error) {
+                showError('searchResponse', 'searchResponseContent', error);
+            }
+        }
+
+        async function advancedSearch() {
+            showLoading('searchResponse');
+            try {
+                const params = new URLSearchParams();
+                const name = document.getElementById('advSearchName').value;
+                const categoryId = document.getElementById('advSearchCategoryId').value;
+                const minRating = document.getElementById('advSearchMinRating').value;
+                const maxPrice = document.getElementById('advSearchMaxPrice').value;
+                
+                if (name) params.append('name', name);
+                if (categoryId) params.append('categoryId', categoryId);
+                if (minRating) params.append('minRating', minRating);
+                if (maxPrice) params.append('maxPrice', maxPrice);
+                
+                const response = await makeRequest('GET', `${API_BASE}/api/apps/search/advanced?${params}`);
+                showResponse('searchResponse', 'searchResponseContent', response);
+            } catch (error) {
+                showError('searchResponse', 'searchResponseContent', error);
+            }
+        }
+
+        async function getTrendingApps() {
+            showLoading('searchResponse');
+            try {
+                const limit = document.getElementById('trendingLimit').value;
+                const days = document.getElementById('trendingDays').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/apps/search/trending?limit=${limit}&days=${days}`);
+                showResponse('searchResponse', 'searchResponseContent', response);
+            } catch (error) {
+                showError('searchResponse', 'searchResponseContent', error);
+            }
+        }
+
+        // Comment Functions
+        async function addComment() {
+            showLoading('commentsResponse');
+            try {
+                const data = {
+                    applicationId: parseInt(document.getElementById('commentAppId').value),
+                    userId: parseInt(document.getElementById('commentUserId').value),
+                    description: document.getElementById('commentDescription').value,
+                    rating: parseInt(document.getElementById('commentRating').value)
+                };
+                
+                const response = await makeRequest('POST', `${API_BASE}/api/comments`, data);
+                showResponse('commentsResponse', 'commentsResponseContent', response);
+            } catch (error) {
+                showError('commentsResponse', 'commentsResponseContent', error);
+            }
+        }
+
+        async function getCommentsForApp() {
+            showLoading('commentsResponse');
+            try {
+                const appId = document.getElementById('getCommentsAppId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/comments/app/${appId}`);
+                showResponse('commentsResponse', 'commentsResponseContent', response);
+            } catch (error) {
+                showError('commentsResponse', 'commentsResponseContent', error);
+            }
+        }
+
+        async function getCommentsByUser() {
+            showLoading('commentsResponse');
+            try {
+                const userId = document.getElementById('getCommentsUserId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/comments/user/${userId}`);
+                showResponse('commentsResponse', 'commentsResponseContent', response);
+            } catch (error) {
+                showError('commentsResponse', 'commentsResponseContent', error);
+            }
+        }
+
+        async function getCommentsForOwnerApps() {
+            showLoading('commentsResponse');
+            try {
+                const ownerId = document.getElementById('getCommentsOwnerId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/comments/owner/${ownerId}/apps`);
+                showResponse('commentsResponse', 'commentsResponseContent', response);
+            } catch (error) {
+                showError('commentsResponse', 'commentsResponseContent', error);
+            }
+        }
+
+        // Download Functions
+        async function trackDownload() {
+            showLoading('downloadsResponse');
+            try {
+                const data = {
+                    appId: parseInt(document.getElementById('trackAppId').value),
+                    userId: parseInt(document.getElementById('trackUserId').value)
+                };
+                
+                const response = await makeRequest('POST', `${API_BASE}/api/downloads/track`, data);
+                showResponse('downloadsResponse', 'downloadsResponseContent', response);
+            } catch (error) {
+                showError('downloadsResponse', 'downloadsResponseContent', error);
+            }
+        }
+
+        async function getDownloadCount() {
+            showLoading('downloadsResponse');
+            try {
+                const appId = document.getElementById('downloadCountAppId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/downloads/app/${appId}/count`);
+                showResponse('downloadsResponse', 'downloadsResponseContent', response);
+            } catch (error) {
+                showError('downloadsResponse', 'downloadsResponseContent', error);
+            }
+        }
+
+        async function getUserDownloadHistory() {
+            showLoading('downloadsResponse');
+            try {
+                const userId = document.getElementById('downloadHistoryUserId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/downloads/user/${userId}`);
+                showResponse('downloadsResponse', 'downloadsResponseContent', response);
+            } catch (error) {
+                showError('downloadsResponse', 'downloadsResponseContent', error);
+            }
+        }
+
+        async function getOwnerDownloadStats() {
+            showLoading('downloadsResponse');
+            try {
+                const ownerId = document.getElementById('downloadStatsOwnerId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/downloads/owner/${ownerId}/stats`);
+                showResponse('downloadsResponse', 'downloadsResponseContent', response);
+            } catch (error) {
+                showError('downloadsResponse', 'downloadsResponseContent', error);
+            }
+        }
+
+        // Notification Functions
+        async function sendAppUpdateNotification() {
+            showLoading('notificationsResponse');
+            try {
+                const appId = document.getElementById('notifyAppId').value;
+                const data = {
+                    message: document.getElementById('notifyMessage').value,
+                    ownerId: parseInt(document.getElementById('notifyOwnerId').value)
+                };
+                
+                const response = await makeRequest('POST', `${API_BASE}/api/notifications/app/${appId}/update`, data);
+                showResponse('notificationsResponse', 'notificationsResponseContent', response);
+            } catch (error) {
+                showError('notificationsResponse', 'notificationsResponseContent', error);
+            }
+        }
+
+        async function getOwnerNotifications() {
+            showLoading('notificationsResponse');
+            try {
+                const ownerId = document.getElementById('getNotifyOwnerId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/notifications/owner/${ownerId}`);
+                showResponse('notificationsResponse', 'notificationsResponseContent', response);
+            } catch (error) {
+                showError('notificationsResponse', 'notificationsResponseContent', error);
+            }
+        }
+
+        async function getUserNotifications() {
+            showLoading('notificationsResponse');
+            try {
+                const userId = document.getElementById('getNotifyUserId').value;
+                const response = await makeRequest('GET', `${API_BASE}/api/notifications/user/${userId}`);
+                showResponse('notificationsResponse', 'notificationsResponseContent', response);
+            } catch (error) {
+                showError('notificationsResponse', 'notificationsResponseContent', error);
+            }
+        }
+
+        async function markNotificationRead() {
+            showLoading('notificationsResponse');
+            try {
+                const notificationId = document.getElementById('markReadNotifyId').value;
+                const response = await makeRequest('PUT', `${API_BASE}/api/notifications/${notificationId}/read`);
+                showResponse('notificationsResponse', 'notificationsResponseContent', response);
+            } catch (error) {
+                showError('notificationsResponse', 'notificationsResponseContent', error);
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Play Store API Tester loaded');
+        });
+    </script>
+</body>
+</html> 

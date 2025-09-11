@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Store - App Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🏪 Play Store</h1>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="goBack()">← Back</button>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div id="alertContainer"></div>
+
+        <div id="loadingContainer" class="loading">
+            <div class="spinner"></div>
+            <p>Loading app details...</p>
+        </div>
+
+        <div id="appDetailsContainer" class="hidden">
+            <div class="app-details-header">
+                <div class="app-icon">📱</div>
+                <div class="app-info">
+                    <h1 id="appName">App Name</h1>
+                    <p id="appDescription">App description will appear here...</p>
+                    <div class="app-meta">
+                        <span id="appCategory">Category</span>
+                        <span id="appVersion">Version</span>
+                        <span id="appSize">Size</span>
+                    </div>
+                    <div class="app-stats">
+                        <div class="stat">
+                            <span class="stat-value" id="appRating">0</span>
+                            <span class="stat-label">Rating</span>
+                            <div class="stars" id="appStars">☆☆☆☆☆</div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="appDownloads">0</span>
+                            <span class="stat-label">Downloads</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-actions" id="appActions">
+                    <!-- Actions will be populated based on user type -->
+                </div>
+            </div>
+
+            <!-- Comments Section (Users Only) -->
+            <div id="commentsSection" class="comments-section">
+                <div class="section-header">
+                    <h3>Reviews & Comments</h3>
+                    <div id="userCommentForm" class="comment-form hidden">
+                        <h4>Write a Review</h4>
+                        <form onsubmit="submitComment(event)">
+                            <div class="rating-input">
+                                <label>Rating:</label>
+                                <div class="star-rating" id="starRating">
+                                    <span class="star" data-rating="1">☆</span>
+                                    <span class="star" data-rating="2">☆</span>
+                                    <span class="star" data-rating="3">☆</span>
+                                    <span class="star" data-rating="4">☆</span>
+                                    <span class="star" data-rating="5">☆</span>
+                                </div>
+                                <input type="hidden" id="selectedRating" value="0">
+                            </div>
+                            <div class="form-group">
+                                <textarea id="commentText" placeholder="Write your review..." rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="commentsContainer">
+                    <div id="loadingComments" class="loading hidden">
+                        <div class="spinner"></div>
+                        <p>Loading comments...</p>
+                    </div>
+                    <div id="commentsList">
+                        <!-- Comments will be loaded here -->
+                    </div>
+                    <div id="noCommentsMessage" class="text-center hidden">
+                        <p>No reviews yet. Be the first to review this app!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="appNotFound" class="text-center hidden">
+            <h2>App Not Found</h2>
+            <p>The requested app could not be found.</p>
+            <button class="btn btn-primary" onclick="goBack()">Go Back</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = ''; // Use relative URLs since we're served from the same origin
+        let currentUser = null;
+        let currentApp = null;
+        let categories = [];
+        let selectedRating = 0;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadCategories();
+            loadAppDetails();
+            setupStarRating();
+        });
+
+        function checkAuthentication() {
+            const token = localStorage.getItem('token');
+            const userType = localStorage.getItem('userType');
+            const username = localStorage.getItem('username');
+            const userId = localStorage.getItem('userId');
+
+            if (!token) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            currentUser = {
+                id: userId,
+                username: username,
+                token: token,
+                type: userType
+            };
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        function goBack() {
+            if (currentUser.type === 'user') {
+                window.location.href = 'user-dashboard.html';
+            } else {
+                window.location.href = 'owner-dashboard.html';
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loadingContainer').classList.remove('hidden');
+            document.getElementById('appDetailsContainer').classList.add('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingContainer').classList.add('hidden');
+            document.getElementById('appDetailsContainer').classList.remove('hidden');
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        async function makeRequest(method, url, data = null, useAuth = false) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            if (useAuth && currentUser.token) {
+                options.headers['Authorization'] = `Bearer ${currentUser.token}`;
+            }
+
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+
+            try {
+                const response = await fetch(url, options);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: Request failed`);
+                }
+                
+                // Check if response has content before trying to parse JSON
+                const contentType = response.headers.get('content-type');
+                const text = await response.text();
+                
+                if (!text || !text.trim()) {
+                    // Empty response - return success object for successful requests
+                    return { success: true, status: response.status };
+                }
+                
+                if (contentType && contentType.includes('application/json')) {
+                    try {
+                        return JSON.parse(text);
+                    } catch (jsonError) {
+                        console.warn('Failed to parse JSON response:', text);
+                        return { success: true, status: response.status, rawResponse: text };
+                    }
+                } else {
+                    // Non-JSON response
+                    return { success: true, status: response.status, rawResponse: text };
+                }
+                
+            } catch (error) {
+                console.error('Request failed:', error);
+                throw error;
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await makeRequest('GET', `${API_BASE}/api/categories`);
+                categories = response.data || response;
+            } catch (error) {
+                console.error('Failed to load categories:', error);
+            }
+        }
+
+        async function loadAppDetails() {
+            const appId = localStorage.getItem('selectedAppId');
+            if (!appId) {
+                showAppNotFound();
+                return;
+            }
+
+            try {
+                const response = await makeRequest('GET', `${API_BASE}/api/apps/${appId}`);
+                currentApp = response.data || response;
+                
+                displayAppDetails();
+                loadComments();
+                
+            } catch (error) {
+                console.error('Failed to load app details:', error);
+                showAppNotFound();
+            }
+        }
+
+        function showAppNotFound() {
+            document.getElementById('loadingContainer').classList.add('hidden');
+            document.getElementById('appDetailsContainer').classList.add('hidden');
+            document.getElementById('appNotFound').classList.remove('hidden');
+        }
+
+        function displayAppDetails() {
+            hideLoading();
+            
+            const category = categories.find(cat => cat.id === currentApp.categoryId);
+            
+            // Update app info
+            document.getElementById('appName').textContent = currentApp.name;
+            document.getElementById('appDescription').textContent = currentApp.description;
+            document.getElementById('appCategory').textContent = `Category: ${category ? category.name : 'Unknown'}`;
+            document.getElementById('appVersion').textContent = `Version: ${currentApp.version}`;
+            document.getElementById('appSize').textContent = `Size: ${currentApp.sizeMb || 0} MB`;
+            
+            // Update stats
+            const rating = currentApp.rating || 0;
+            document.getElementById('appRating').textContent = rating.toFixed(1);
+            document.getElementById('appDownloads').textContent = currentApp.downloadCount || 0;
+            document.getElementById('appStars').innerHTML = generateStars(rating);
+            
+            // Setup actions based on user type
+            setupAppActions();
+            
+            // Show/hide comments section based on user type
+            const commentsSection = document.getElementById('commentsSection');
+            if (currentUser.type === 'user') {
+                commentsSection.classList.remove('hidden');
+                document.getElementById('userCommentForm').classList.remove('hidden');
+            } else {
+                commentsSection.classList.remove('hidden');
+                document.getElementById('userCommentForm').classList.add('hidden');
+            }
+        }
+
+        function setupAppActions() {
+            const actionsContainer = document.getElementById('appActions');
+            
+            if (currentUser.type === 'user') {
+                // Check if user has already downloaded this app
+                checkIfDownloaded().then(isDownloaded => {
+                    actionsContainer.innerHTML = isDownloaded ? 
+                        '<span class="btn btn-secondary">Downloaded</span>' :
+                        `<button class="btn btn-primary btn-large" onclick="downloadApp()">Download</button>`;
+                });
+            } else {
+                // Owner view - no download button
+                actionsContainer.innerHTML = '<span class="owner-badge">👑 Your App</span>';
+            }
+        }
+
+        async function checkIfDownloaded() {
+            try {
+                const response = await makeRequest('GET', `${API_BASE}/api/downloads/user/${currentUser.id}`, null, true);
+                const downloads = response.data || response;
+                return downloads.some(download => download.appId === currentApp.id);
+            } catch (error) {
+                console.error('Failed to check download status:', error);
+                return false;
+            }
+        }
+
+        async function downloadApp() {
+            try {
+                showAlert('Starting download...', 'info');
+                
+                const downloadData = {
+                    appId: currentApp.id,
+                    userId: parseInt(currentUser.id)
+                };
+                
+                await makeRequest('POST', `${API_BASE}/api/downloads/track`, downloadData, true);
+                
+                // Increment download count
+                await makeRequest('PUT', `${API_BASE}/api/apps/${currentApp.id}/increment-download`);
+                
+                showAlert('App downloaded successfully!', 'success');
+                
+                // Update UI
+                currentApp.downloadCount = (currentApp.downloadCount || 0) + 1;
+                document.getElementById('appDownloads').textContent = currentApp.downloadCount;
+                setupAppActions(); // Update button to show "Downloaded"
+                
+            } catch (error) {
+                showAlert(`Download failed: ${error.message}`, 'error');
+                console.error('Download failed:', error);
+            }
+        }
+
+        async function loadComments() {
+            const commentsContainer = document.getElementById('loadingComments');
+            commentsContainer.classList.remove('hidden');
+            
+            try {
+                const response = await makeRequest('GET', `${API_BASE}/api/comments/app/${currentApp.id}`);
+                const comments = response.data || response;
+                
+                displayComments(comments);
+                
+            } catch (error) {
+                console.error('Failed to load comments:', error);
+                document.getElementById('noCommentsMessage').classList.remove('hidden');
+            } finally {
+                commentsContainer.classList.add('hidden');
+            }
+        }
+
+        function displayComments(comments) {
+            const commentsList = document.getElementById('commentsList');
+            const noCommentsMessage = document.getElementById('noCommentsMessage');
+            
+            if (!comments || comments.length === 0) {
+                noCommentsMessage.classList.remove('hidden');
+                return;
+            }
+            
+            noCommentsMessage.classList.add('hidden');
+            
+            commentsList.innerHTML = comments.map(comment => `
+                <div class="comment">
+                    <div class="comment-header">
+                        <span class="comment-author">User ${comment.userId}</span>
+                        <div class="comment-rating">${generateStars(comment.rating)}</div>
+                        <span class="comment-date">${new Date(comment.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <div class="comment-content">
+                        ${comment.description}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupStarRating() {
+            const stars = document.querySelectorAll('#starRating .star');
+            
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    selectedRating = parseInt(this.dataset.rating);
+                    document.getElementById('selectedRating').value = selectedRating;
+                    updateStarDisplay();
+                });
+                
+                star.addEventListener('mouseover', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    highlightStars(rating);
+                });
+            });
+            
+            document.getElementById('starRating').addEventListener('mouseleave', function() {
+                updateStarDisplay();
+            });
+        }
+
+        function highlightStars(rating) {
+            const stars = document.querySelectorAll('#starRating .star');
+            stars.forEach((star, index) => {
+                star.textContent = index < rating ? '★' : '☆';
+            });
+        }
+
+        function updateStarDisplay() {
+            highlightStars(selectedRating);
+        }
+
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '★';
+            }
+            
+            if (hasHalfStar) {
+                stars += '☆';
+            }
+            
+            while (stars.length < 5) {
+                stars += '☆';
+            }
+            
+            return stars;
+        }
+
+        async function submitComment(event) {
+            event.preventDefault();
+            
+            if (selectedRating === 0) {
+                showAlert('Please select a rating', 'error');
+                return;
+            }
+            
+            const commentText = document.getElementById('commentText').value.trim();
+            if (!commentText) {
+                showAlert('Please write a comment', 'error');
+                return;
+            }
+            
+            try {
+                const commentData = {
+                    applicationId: currentApp.id,
+                    userId: parseInt(currentUser.id),
+                    description: commentText,
+                    rating: selectedRating
+                };
+                
+                await makeRequest('POST', `${API_BASE}/api/comments`, commentData, true);
+                
+                showAlert('Review submitted successfully!', 'success');
+                
+                // Clear form
+                document.getElementById('commentText').value = '';
+                selectedRating = 0;
+                updateStarDisplay();
+                
+                // Reload comments
+                loadComments();
+                
+            } catch (error) {
+                showAlert(`Failed to submit review: ${error.message}`, 'error');
+                console.error('Failed to submit comment:', error);
+            }
+        }
+    </script>
+</body>
+</html>

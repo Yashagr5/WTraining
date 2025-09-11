@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Store - Welcome</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="landing-container">
+        <div class="landing-content">
+            <div class="landing-left">
+                <h1 class="landing-title">🏪 Play Store</h1>
+                <p class="landing-subtitle">Discover amazing apps and manage your digital marketplace</p>
+                <div class="features">
+                    <div class="feature-item">
+                        <h3>📱 Browse Apps</h3>
+                        <p>Explore thousands of applications across various categories</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>⭐ Rate & Review</h3>
+                        <p>Share your experience and help others discover great apps</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>🚀 Publish Apps</h3>
+                        <p>Developers can easily publish and manage their applications</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="landing-right">
+                <div class="user-type-toggle">
+                    <button class="user-type-btn active" onclick="switchUserType('user')">User</button>
+                    <button class="user-type-btn" onclick="switchUserType('owner')">Owner</button>
+                </div>
+
+                <div id="alertContainer"></div>
+
+                <!-- User Forms -->
+                <div id="userForms">
+                    <!-- User Login Form -->
+                    <form id="userLoginForm" class="auth-form">
+                        <h2>User Login</h2>
+                        <div class="form-group">
+                            <label for="userLoginUsername">Username or Email</label>
+                            <input type="text" id="userLoginUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userLoginPassword">Password</label>
+                            <input type="password" id="userLoginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <div class="auth-toggle">
+                            <a href="#" onclick="showUserRegister()">Don't have an account? Register</a>
+                        </div>
+                    </form>
+
+                    <!-- User Registration Form -->
+                    <form id="userRegisterForm" class="auth-form hidden">
+                        <h2>User Registration</h2>
+                        <div class="form-group">
+                            <label for="userRegUsername">Username</label>
+                            <input type="text" id="userRegUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userRegEmail">Email</label>
+                            <input type="email" id="userRegEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userRegFullName">Full Name</label>
+                            <input type="text" id="userRegFullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userRegPhone">Phone</label>
+                            <input type="tel" id="userRegPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userRegPassword">Password</label>
+                            <input type="password" id="userRegPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <div class="auth-toggle">
+                            <a href="#" onclick="showUserLogin()">Already have an account? Login</a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Owner Forms -->
+                <div id="ownerForms" class="hidden">
+                    <!-- Owner Login Form -->
+                    <form id="ownerLoginForm" class="auth-form">
+                        <h2>Owner Login</h2>
+                        <div class="form-group">
+                            <label for="ownerLoginUsername">Username or Email</label>
+                            <input type="text" id="ownerLoginUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ownerLoginPassword">Password</label>
+                            <input type="password" id="ownerLoginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <div class="auth-toggle">
+                            <a href="#" onclick="showOwnerRegister()">Don't have an account? Register</a>
+                        </div>
+                    </form>
+
+                    <!-- Owner Registration Form -->
+                    <form id="ownerRegisterForm" class="auth-form hidden">
+                        <h2>Owner Registration</h2>
+                        <div class="form-group">
+                            <label for="ownerRegName">Owner Name</label>
+                            <input type="text" id="ownerRegName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ownerRegEmail">Email</label>
+                            <input type="email" id="ownerRegEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ownerRegCompany">Company Name</label>
+                            <input type="text" id="ownerRegCompany" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ownerRegPhone">Phone</label>
+                            <input type="tel" id="ownerRegPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ownerRegAddress">Business Address</label>
+                            <input type="text" id="ownerRegAddress" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ownerRegType">Business Type</label>
+                            <input type="text" id="ownerRegType" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ownerRegPassword">Password</label>
+                            <input type="password" id="ownerRegPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <div class="auth-toggle">
+                            <a href="#" onclick="showOwnerLogin()">Already have an account? Login</a>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="loadingContainer" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Processing...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = ''; // Use relative URLs since we're served from the same origin
+        let currentUserType = 'user';
+
+        // UI Functions
+        function switchUserType(type) {
+            currentUserType = type;
+            
+            // Update toggle buttons
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide forms
+            if (type === 'user') {
+                document.getElementById('userForms').classList.remove('hidden');
+                document.getElementById('ownerForms').classList.add('hidden');
+            } else {
+                document.getElementById('userForms').classList.add('hidden');
+                document.getElementById('ownerForms').classList.remove('hidden');
+            }
+            
+            clearAlerts();
+        }
+
+        function showUserLogin() {
+            document.getElementById('userLoginForm').classList.remove('hidden');
+            document.getElementById('userRegisterForm').classList.add('hidden');
+        }
+
+        function showUserRegister() {
+            document.getElementById('userLoginForm').classList.add('hidden');
+            document.getElementById('userRegisterForm').classList.remove('hidden');
+        }
+
+        function showOwnerLogin() {
+            document.getElementById('ownerLoginForm').classList.remove('hidden');
+            document.getElementById('ownerRegisterForm').classList.add('hidden');
+        }
+
+        function showOwnerRegister() {
+            document.getElementById('ownerLoginForm').classList.add('hidden');
+            document.getElementById('ownerRegisterForm').classList.remove('hidden');
+        }
+
+        function showLoading() {
+            document.getElementById('loadingContainer').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingContainer').classList.add('hidden');
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${message}
+                </div>
+            `;
+        }
+
+        function clearAlerts() {
+            document.getElementById('alertContainer').innerHTML = '';
+        }
+
+        // API Functions
+        async function makeRequest(method, url, data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.message || `HTTP ${response.status}: Request failed`);
+                }
+                
+                return result;
+            } catch (error) {
+                console.error('Request failed:', error);
+                throw error;
+            }
+        }
+
+        // Authentication Functions
+        async function handleUserLogin(event) {
+            event.preventDefault();
+            showLoading();
+            clearAlerts();
+
+            try {
+                const data = {
+                    usernameOrEmail: document.getElementById('userLoginUsername').value,
+                    password: document.getElementById('userLoginPassword').value
+                };
+
+                const response = await makeRequest('POST', `${API_BASE}/api/users/login`, data);
+                
+                if (response.data && response.data.token) {
+                    // Store user data
+                    localStorage.setItem('token', response.data.token);
+                    localStorage.setItem('userId', response.data.userId);
+                    localStorage.setItem('username', response.data.username);
+                    localStorage.setItem('userType', 'user');
+                    
+                    showAlert('Login successful! Redirecting...', 'success');
+                    
+                    // Redirect to user dashboard
+                    setTimeout(() => {
+                        window.location.href = 'user-dashboard.html';
+                    }, 1500);
+                } else {
+                    throw new Error('Invalid response format');
+                }
+            } catch (error) {
+                showAlert(`Login failed: ${error.message}`, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function handleUserRegister(event) {
+            event.preventDefault();
+            showLoading();
+            clearAlerts();
+
+            try {
+                const data = {
+                    username: document.getElementById('userRegUsername').value,
+                    email: document.getElementById('userRegEmail').value,
+                    fullName: document.getElementById('userRegFullName').value,
+                    phone: document.getElementById('userRegPhone').value,
+                    password: document.getElementById('userRegPassword').value
+                };
+
+                const response = await makeRequest('POST', `${API_BASE}/api/users/register`, data);
+                
+                showAlert('Registration successful! Please login with your credentials.', 'success');
+                
+                // Switch to login form
+                setTimeout(() => {
+                    showUserLogin();
+                    clearAlerts();
+                }, 2000);
+                
+            } catch (error) {
+                showAlert(`Registration failed: ${error.message}`, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function handleOwnerLogin(event) {
+            event.preventDefault();
+            showLoading();
+            clearAlerts();
+
+            try {
+                const data = {
+                    usernameOrEmail: document.getElementById('ownerLoginUsername').value,
+                    password: document.getElementById('ownerLoginPassword').value
+                };
+
+                const response = await makeRequest('POST', `${API_BASE}/api/owners/login`, data);
+                
+                if (response.data && response.data.token) {
+                    // Store owner data
+                    localStorage.setItem('token', response.data.token);
+                    localStorage.setItem('ownerId', response.data.ownerId);
+                    localStorage.setItem('ownerName', response.data.ownerName);
+                    localStorage.setItem('userType', 'owner');
+                    
+                    showAlert('Login successful! Redirecting...', 'success');
+                    
+                    // Redirect to owner dashboard
+                    setTimeout(() => {
+                        window.location.href = 'owner-dashboard.html';
+                    }, 1500);
+                } else {
+                    throw new Error('Invalid response format');
+                }
+            } catch (error) {
+                showAlert(`Login failed: ${error.message}`, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function handleOwnerRegister(event) {
+            event.preventDefault();
+            showLoading();
+            clearAlerts();
+
+            try {
+                const data = {
+                    ownerName: document.getElementById('ownerRegName').value,
+                    email: document.getElementById('ownerRegEmail').value,
+                    companyName: document.getElementById('ownerRegCompany').value,
+                    phone: document.getElementById('ownerRegPhone').value,
+                    businessAddress: document.getElementById('ownerRegAddress').value,
+                    businessType: document.getElementById('ownerRegType').value,
+                    password: document.getElementById('ownerRegPassword').value
+                };
+
+                const response = await makeRequest('POST', `${API_BASE}/api/owners/register`, data);
+                
+                showAlert('Registration successful! Please login with your credentials.', 'success');
+                
+                // Switch to login form
+                setTimeout(() => {
+                    showOwnerLogin();
+                    clearAlerts();
+                }, 2000);
+                
+            } catch (error) {
+                showAlert(`Registration failed: ${error.message}`, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const token = localStorage.getItem('token');
+            const userType = localStorage.getItem('userType');
+            
+            if (token && userType) {
+                if (userType === 'user') {
+                    window.location.href = 'user-dashboard.html';
+                } else if (userType === 'owner') {
+                    window.location.href = 'owner-dashboard.html';
+                }
+            }
+
+            // Attach form event listeners
+            document.getElementById('userLoginForm').addEventListener('submit', handleUserLogin);
+            document.getElementById('userRegisterForm').addEventListener('submit', handleUserRegister);
+            document.getElementById('ownerLoginForm').addEventListener('submit', handleOwnerLogin);
+            document.getElementById('ownerRegisterForm').addEventListener('submit', handleOwnerRegister);
+        });
+    </script>
+</body>
+</html>

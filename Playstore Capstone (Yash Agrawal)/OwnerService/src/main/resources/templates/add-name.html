@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Owner - Add Name</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f4f6f8;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .form-title {
+      margin-bottom: 1.5rem;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+<div class="container form-container">
+  <div class="form-title text-center">Add Name & Notify Users</div>
+
+  <!-- Success or Error Messages -->
+  <div th:if="${msg}" class="alert alert-success text-center" th:text="${msg}"></div>
+  <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
+
+  <!-- Form -->
+  <form th:action="@{/owners/add-name}" method="post">
+    <div class="mb-3">
+      <label class="form-label">Owner ID</label>
+      <input type="number" class="form-control" name="ownerId" th:value="${ownerId}" required/>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Owner Name</label>
+      <input type="text" class="form-control" name="name" th:value="${name}" required/>
+    </div>
+
+    <div class="d-grid">
+      <button type="submit" class="btn btn-success">Add & Notify Users</button>
+    </div>
+  </form>
+
+  <!-- Back to Dashboard -->
+  <div class="text-center mt-3">
+    <a th:href="@{/owners/dashboard}" class="btn btn-outline-primary">← Back to Dashboard</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

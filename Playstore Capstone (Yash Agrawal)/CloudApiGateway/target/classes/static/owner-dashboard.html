@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Store - Owner Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🏪 Play Store - Owner Dashboard</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <ul class="sidebar-nav">
+                <li><a href="#" class="active" onclick="showMyApps()">My Apps</a></li>
+                <li><a href="#" onclick="showRegisterApp()">Register App</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <div id="alertContainer"></div>
+
+            <!-- My Apps Section -->
+            <div id="myAppsSection">
+                <div class="section-header">
+                    <h2>My Applications</h2>
+                    <div class="filters">
+                        <input type="text" id="searchMyApps" placeholder="Search my apps..." onkeyup="searchMyApps()">
+                    </div>
+                </div>
+
+                <div id="loadingContainer" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Loading apps...</p>
+                </div>
+
+                <div id="myAppsContainer">
+                    <div class="app-grid" id="myAppGrid">
+                        <!-- Owner's apps will be loaded here -->
+                    </div>
+                </div>
+
+                <div id="noMyAppsMessage" class="text-center hidden">
+                    <h3>No apps found</h3>
+                    <p>You haven't registered any apps yet. Click "Register App" to get started.</p>
+                </div>
+            </div>
+
+            <!-- Register App Section -->
+            <div id="registerAppSection" class="hidden">
+                <div class="section-header">
+                    <h2>Register New Application</h2>
+                </div>
+
+                <div class="form-container">
+                    <form id="registerAppForm" onsubmit="registerApp(event)">
+                        <div class="form-group">
+                            <label for="appName">App Name *</label>
+                            <input type="text" id="appName" name="appName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="appDescription">Description *</label>
+                            <textarea id="appDescription" name="appDescription" rows="4" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="appVersion">Version *</label>
+                            <input type="text" id="appVersion" name="appVersion" placeholder="e.g., 1.0.0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="appCategory">Category *</label>
+                            <select id="appCategory" name="appCategory" required>
+                                <option value="">Select Category</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="appSize">Size (MB)</label>
+                            <input type="number" id="appSize" name="appSize" min="1" step="0.1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="appVisible" name="appVisible" checked>
+                                Make app visible to users
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Register App</button>
+                            <button type="button" class="btn btn-secondary" onclick="clearRegisterForm()">Clear</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit App Modal -->
+    <div id="editAppModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Application</h3>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editAppForm" onsubmit="updateApp(event)">
+                    <input type="hidden" id="editAppId">
+                    
+                    <div class="form-group">
+                        <label for="editAppName">App Name *</label>
+                        <input type="text" id="editAppName" name="editAppName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editAppDescription">Description *</label>
+                        <textarea id="editAppDescription" name="editAppDescription" rows="4" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editAppVersion">Version *</label>
+                        <input type="text" id="editAppVersion" name="editAppVersion" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editAppCategory">Category *</label>
+                        <select id="editAppCategory" name="editAppCategory" required>
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editAppSize">Size (MB)</label>
+                        <input type="number" id="editAppSize" name="editAppSize" min="1" step="0.1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="editAppVisible" name="editAppVisible">
+                            Make app visible to users
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update App</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteApp()">Delete App</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = ''; // Use relative URLs since we're served from the same origin
+        let currentOwner = null;
+        let myApps = [];
+        let categories = [];
+        let currentEditingApp = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadCategories();
+            loadMyApps();
+        });
+
+        function checkAuthentication() {
+            const token = localStorage.getItem('token');
+            const userType = localStorage.getItem('userType');
+            const username = localStorage.getItem('ownerName');
+            const ownerId = localStorage.getItem('ownerId');
+
+            if (!token || userType !== 'owner') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            currentOwner = {
+                id: ownerId,
+                username: username,
+                token: token
+            };
+            
+            console.log('Owner authenticated:', currentOwner);
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        function showLoading() {
+            document.getElementById('loadingContainer').classList.remove('hidden');
+            document.getElementById('myAppGrid').innerHTML = '';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingContainer').classList.add('hidden');
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        async function makeRequest(method, url, data = null, useAuth = false) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+
+            if (useAuth && currentOwner.token) {
+                options.headers['Authorization'] = `Bearer ${currentOwner.token}`;
+            }
+
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.message || `HTTP ${response.status}: Request failed`);
+                }
+                
+                return result;
+            } catch (error) {
+                console.error('Request failed:', error);
+                throw error;
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await makeRequest('GET', `${API_BASE}/api/categories`);
+                categories = response.data || response;
+                
+                // Populate category dropdowns
+                const categorySelects = ['appCategory', 'editAppCategory'];
+                categorySelects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    select.innerHTML = '<option value="">Select Category</option>';
+                    
+                    categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.id;
+                        option.textContent = category.name;
+                        select.appendChild(option);
+                    });
+                });
+            } catch (error) {
+                console.error('Failed to load categories:', error);
+            }
+        }
+
+        async function loadMyApps() {
+            showLoading();
+            try {
+                const response = await makeRequest('GET', `${API_BASE}/api/apps`);
+                const allApps = response.data || response;
+                
+                console.log('All apps loaded:', allApps);
+                console.log('Current owner ID:', currentOwner.id);
+                
+                // Filter apps by current owner - ensure proper type conversion
+                myApps = allApps.filter(app => {
+                    const appOwnerId = parseInt(app.ownerId);
+                    const currentOwnerId = parseInt(currentOwner.id);
+                    console.log(`Comparing app ownerId ${appOwnerId} with current owner ${currentOwnerId}`);
+                    return appOwnerId === currentOwnerId;
+                });
+                
+                console.log('Filtered my apps:', myApps);
+                
+                displayMyApps(myApps);
+            } catch (error) {
+                showAlert(`Failed to load apps: ${error.message}`, 'error');
+                console.error('Failed to load apps:', error);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayMyApps(apps) {
+            const appGrid = document.getElementById('myAppGrid');
+            const noAppsMessage = document.getElementById('noMyAppsMessage');
+            
+            if (!apps || apps.length === 0) {
+                appGrid.innerHTML = '';
+                noAppsMessage.classList.remove('hidden');
+                return;
+            }
+            
+            noAppsMessage.classList.add('hidden');
+            
+            appGrid.innerHTML = apps.map(app => {
+                const category = categories.find(cat => cat.id === app.categoryId);
+                
+                return `
+                    <div class="app-card">
+                        <h3>${app.name}</h3>
+                        <p>${app.description}</p>
+                        <div class="app-meta">
+                            <span>Category: ${category ? category.name : 'Unknown'}</span>
+                            <span>Version: ${app.version}</span>
+                        </div>
+                        <div class="app-meta">
+                            <span>Downloads: ${app.downloadCount || 0}</span>
+                            <span>Rating: ${app.rating || 0}/5</span>
+                        </div>
+                        <div class="app-meta">
+                            <span>Size: ${app.sizeMb || 0} MB</span>
+                            <span class="visibility-status ${app.isVisible ? 'visible' : 'hidden'}">
+                                ${app.isVisible ? '👁️ Visible' : '🚫 Hidden'}
+                            </span>
+                        </div>
+                        <div class="app-actions">
+                            <button class="btn btn-primary" onclick="openEditModal(${app.id})">Edit</button>
+                            <button class="btn ${app.isVisible ? 'btn-secondary' : 'btn-success'}" 
+                                    onclick="toggleVisibility(${app.id}, ${!app.isVisible})">
+                                ${app.isVisible ? 'Hide' : 'Show'}
+                            </button>
+                            <button class="btn btn-outline" onclick="viewAppDetails(${app.id})">View Details</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showMyApps() {
+            document.getElementById('myAppsSection').classList.remove('hidden');
+            document.getElementById('registerAppSection').classList.add('hidden');
+            
+            document.querySelectorAll('.sidebar-nav a').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function showRegisterApp() {
+            document.getElementById('myAppsSection').classList.add('hidden');
+            document.getElementById('registerAppSection').classList.remove('hidden');
+            
+            document.querySelectorAll('.sidebar-nav a').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function searchMyApps() {
+            const searchTerm = document.getElementById('searchMyApps').value.toLowerCase();
+            
+            const filteredApps = myApps.filter(app => 
+                app.name.toLowerCase().includes(searchTerm) || 
+                app.description.toLowerCase().includes(searchTerm)
+            );
+            
+            displayMyApps(filteredApps);
+        }
+
+        async function registerApp(event) {
+            event.preventDefault();
+            
+            try {
+                const formData = new FormData(event.target);
+                
+                // Validate required fields
+                if (!currentOwner || !currentOwner.id) {
+                    throw new Error('Owner not logged in');
+                }
+                
+                const categoryId = parseInt(formData.get('appCategory'));
+                if (!categoryId || isNaN(categoryId)) {
+                    throw new Error('Please select a valid category');
+                }
+                
+                const appData = {
+                    name: formData.get('appName'),
+                    description: formData.get('appDescription'),
+                    version: formData.get('appVersion'),
+                    categoryId: categoryId,
+                    ownerId: parseInt(currentOwner.id),
+                    sizeMb: parseFloat(formData.get('appSize')) || 0,
+                    isVisible: formData.get('appVisible') === 'on'
+                };
+                
+                console.log('Registering app with data:', appData);
+                console.log('Current owner:', currentOwner);
+                
+                await makeRequest('POST', `${API_BASE}/api/apps`, appData, true);
+                
+                showAlert('App registered successfully!', 'success');
+                clearRegisterForm();
+                loadMyApps();
+                showMyApps();
+                
+            } catch (error) {
+                showAlert(`Registration failed: ${error.message}`, 'error');
+                console.error('Registration failed:', error);
+            }
+        }
+
+        function clearRegisterForm() {
+            document.getElementById('registerAppForm').reset();
+            document.getElementById('appVisible').checked = true;
+        }
+
+        function openEditModal(appId) {
+            const app = myApps.find(a => a.id === appId);
+            if (!app) return;
+            
+            currentEditingApp = app;
+            
+            // Populate form
+            document.getElementById('editAppId').value = app.id;
+            document.getElementById('editAppName').value = app.name;
+            document.getElementById('editAppDescription').value = app.description;
+            document.getElementById('editAppVersion').value = app.version;
+            document.getElementById('editAppCategory').value = app.categoryId;
+            document.getElementById('editAppSize').value = app.sizeMb || '';
+            document.getElementById('editAppVisible').checked = app.isVisible;
+            
+            document.getElementById('editAppModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editAppModal').classList.add('hidden');
+            currentEditingApp = null;
+        }
+
+        async function updateApp(event) {
+            event.preventDefault();
+            
+            try {
+                const formData = new FormData(event.target);
+                const appId = document.getElementById('editAppId').value;
+                
+                const appData = {
+                    name: formData.get('editAppName'),
+                    description: formData.get('editAppDescription'),
+                    version: formData.get('editAppVersion'),
+                    categoryId: parseInt(formData.get('editAppCategory')),
+                    ownerId: parseInt(currentOwner.id),
+                    sizeMb: parseFloat(formData.get('editAppSize')) || 0,
+                    isVisible: formData.get('editAppVisible') === 'on'
+                };
+                
+                await makeRequest('PUT', `${API_BASE}/api/apps/${appId}`, appData, true);
+                
+                showAlert('App updated successfully!', 'success');
+                closeEditModal();
+                loadMyApps();
+                
+            } catch (error) {
+                showAlert(`Update failed: ${error.message}`, 'error');
+                console.error('Update failed:', error);
+            }
+        }
+
+        async function deleteApp() {
+            if (!currentEditingApp) return;
+            
+            if (!confirm(`Are you sure you want to delete "${currentEditingApp.name}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                await makeRequest('DELETE', `${API_BASE}/api/apps/${currentEditingApp.id}`, null, true);
+                
+                showAlert('App deleted successfully!', 'success');
+                closeEditModal();
+                loadMyApps();
+                
+            } catch (error) {
+                showAlert(`Delete failed: ${error.message}`, 'error');
+                console.error('Delete failed:', error);
+            }
+        }
+
+        async function toggleVisibility(appId, newVisibility) {
+            try {
+                const app = myApps.find(a => a.id === appId);
+                if (!app) return;
+                
+                const appData = {
+                    ...app,
+                    isVisible: newVisibility
+                };
+                
+                await makeRequest('PUT', `${API_BASE}/api/apps/${appId}`, appData, true);
+                
+                showAlert(`App ${newVisibility ? 'shown' : 'hidden'} successfully!`, 'success');
+                loadMyApps();
+                
+            } catch (error) {
+                showAlert(`Visibility update failed: ${error.message}`, 'error');
+                console.error('Visibility update failed:', error);
+            }
+        }
+
+        function viewAppDetails(appId) {
+            localStorage.setItem('selectedAppId', appId);
+            window.location.href = 'app-details.html';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('editAppModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+    </script>
+</body>
+</html>
