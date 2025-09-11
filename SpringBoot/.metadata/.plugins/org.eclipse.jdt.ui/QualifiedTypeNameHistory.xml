@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="jakarta.validation.constraints.Email"/>
+    <fullyQualifiedTypeName name="com.example.validation.model.User"/>
+    <fullyQualifiedTypeName name="org.slf4j.Logger"/>
+    <fullyQualifiedTypeName name="org.slf4j.LoggerFactory"/>
+    <fullyQualifiedTypeName name="jakarta.validation.constraints.NotBlank"/>
+    <fullyQualifiedTypeName name="ch.qos.logback.core.model.Model"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.InheritanceType"/>
+    <fullyQualifiedTypeName name="org.springframework.data.annotation.Id"/>
+    <fullyQualifiedTypeName name="com.company.entity.base.Address"/>
+    <fullyQualifiedTypeName name="java.util.Collection"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.EnumType"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.CascadeType"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.Table"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.Id"/>
+    <fullyQualifiedTypeName name="org.springframework.security.core.userdetails.User"/>
+    <fullyQualifiedTypeName name="io.jsonwebtoken.lang.Collections"/>
+    <fullyQualifiedTypeName name="java.util.Map"/>
+    <fullyQualifiedTypeName name="java.io.IOException"/>
+    <fullyQualifiedTypeName name="java.util.Collections"/>
+    <fullyQualifiedTypeName name="java.security.Key"/>
+    <fullyQualifiedTypeName name="java.util.Date"/>
+    <fullyQualifiedTypeName name="org.springframework.ui.Model"/>
+    <fullyQualifiedTypeName name="org.springframework.security.core.Authentication"/>
+    <fullyQualifiedTypeName name="java.util.Optional"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="org.springframework.security.core.annotation.AuthenticationPrincipal"/>
+    <fullyQualifiedTypeName name="com.company.model.Task.Status"/>
+    <fullyQualifiedTypeName name="com.company.model.Comment"/>
+    <fullyQualifiedTypeName name="com.company.model.Task"/>
+    <fullyQualifiedTypeName name="com.company.model.User"/>
+    <fullyQualifiedTypeName name="java.util.Set"/>
+</qualifiedTypeNameHistroy>

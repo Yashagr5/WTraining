@@ -1,0 +1,126 @@
+package com.company.controller;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.company.dto.StudentDTO;
+import com.company.dto.Student_DTO;
+import com.company.dto.Teacher_DTO;
+import com.company.entity.Student;
+import com.company.entity.Teacher;
+import com.company.entity.base.Address;
+import com.company.entity.base.Person;
+import com.company.repo.PersonRepo;
+import com.company.repo.StudentRepo;
+import com.company.repo.TeacherRepo;
+import com.company.service.StudentService;
+
+@RestController
+@RequestMapping("/api")
+public class DemoController {
+private final StudentRepo studentRepo;
+	
+	private final  StudentService studentService;
+	private final TeacherRepo teacherRepo;
+	private final PersonRepo personRepo;
+	
+	
+	public DemoController(StudentService studentService,TeacherRepo teacherRepo,
+			PersonRepo personRepo, StudentRepo studentRepo)
+	{
+		
+		this.studentService = studentService;
+		this.teacherRepo = teacherRepo;
+		this.personRepo = personRepo;
+		this.studentRepo = studentRepo;
+		
+	}
+	
+	@PostMapping("/add")
+	public String add()
+	{
+		
+		Teacher t1 = new Teacher("Niti" , new Address("noida" , "Delhi" , "401235") , "JAVA");
+		teacherRepo.save(t1);
+		
+		
+		Student s1 = new Student("Yash" , new Address("Vinay Nagar" , "Gwalior" , "404741"));
+		s1.addEmail("yash@gmail.com");
+		s1.addEmail("mohit@Yahoo.co.in");
+		
+		
+		Student s2 = new Student("Jatin" , new Address("Rajendernagar" , "Gwalior" , "451236"));
+		s2.addEmail("jat@gmail.com");
+		s2.addEmail("lila@Yahoo.co.in");
+		
+		
+		studentService.save(s1);
+		studentService.save(s2);
+		
+		
+		
+		return "Record Added";
+		
+	}
+		@GetMapping("/studentsdata")
+		public List<StudentDTO> students()
+		{
+			return studentService.findAllWithEmails().stream()
+					.map(s-> new StudentDTO(s.getId(),
+							s.getName(),
+							s.getAddress().getCity(),
+							s.getEmails().stream().map(e-> e.getEmail()).toList())).collect(Collectors.toList());
+			
+			
+		
+		}
+		
+		
+		@GetMapping("/people")
+		public void findAllPeople()
+		{
+			// Hibernate will provide the data with one query which Hibernate will generate polymorphic behaviour or a query (which will return both Student + Teacher) 
+			List<Person> people =  personRepo.findAll();
+			
+			for(Person p :people)
+				if(p instanceof Student s)
+				System.out.println("Student "+  s.getName() + " Course" + s.getAddress());
+				else if(p instanceof Teacher t)
+				System.out.println("Teacher "+  t.getName() + " Subject" + t.getSubject());
+		
+		}
+		
+		
+		@GetMapping("/students")
+		public void findAllStudents()
+		{
+			 studentRepo.findAllStudents().forEach(s->System.out.println("Students Names "+ s.getName()));
+			 
+			
+		}
+		
+		
+		@GetMapping("/teachers")
+		public void findAllTeachers()
+		{
+			teacherRepo.findAllTeachers().forEach(t->System.out.println("Teacher Names "+ t.getName()));;
+			
+		}
+		
+		@GetMapping("/students_dto")
+		public List<Student_DTO> student_dto()
+		{
+			return studentService.allStudents_DTO();
+		}
+		
+		@GetMapping("/teachers_dto")
+		public List<Teacher_DTO> Teacher_dto()
+		{
+			return studentService.allteachers_DTO();
+		}
+}

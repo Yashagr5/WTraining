@@ -1,0 +1,122 @@
+package com.worknest.controller;
+
+import com.worknest.model.Comment;
+import com.worknest.model.Task;
+import com.worknest.model.User;
+import com.worknest.repository.CommentRepository;
+import com.worknest.repository.TaskRepository;
+import com.worknest.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/admin")
+public class AdminController {
+
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    // ---------------- DASHBOARD ----------------
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
+        model.addAttribute("tasks", taskRepository.findAll());
+        model.addAttribute("users", userRepository.findAll());
+        return "admin/dashboard"; // assumes you have admin/dashboard.html
+    }
+
+    // ---------------- TASKS ----------------
+    @GetMapping("/tasks")
+    public String tasksPage(Model model) {
+        model.addAttribute("tasks", taskRepository.findAll());
+        model.addAttribute("users", userRepository.findAll());
+        return "admin/tasks";
+    }
+
+    @PostMapping("/tasks/add")
+    public String addTask(
+            @RequestParam String title,
+            @RequestParam String description,
+            @RequestParam String status,
+            @RequestParam String startDate,
+            @RequestParam String dueDate,
+            @RequestParam List<Long> assignedUser
+    ) {
+        Task task = new Task();
+        task.setTitle(title);
+        task.setDescription(description);
+        task.setStatus(status);
+        task.setStartDate(java.sql.Date.valueOf(startDate));
+        task.setDueDate(java.sql.Date.valueOf(dueDate));
+
+        // If you want to assign multiple users, assuming Task has List<User>
+        List<User> users = userRepository.findAllById(assignedUser);
+        task.setAssignedUsers(users); // or setAssignedUser if single
+
+        taskRepository.save(task);
+        return "redirect:/admin/tasks";
+    }
+
+    @GetMapping("/tasks/updateStatus")
+    public String updateTaskStatus(@RequestParam Long taskId, @RequestParam String status) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            task.setStatus(status);
+            taskRepository.save(task);
+        }
+        return "redirect:/admin/tasks";
+    }
+
+    // ---------------- COMMENTS ----------------
+    @GetMapping("/tasks/{taskId}/comments")
+    public String viewComments(@PathVariable Long taskId, Model model) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            List<Comment> comments = commentRepository.findByTaskId(taskId);
+            model.addAttribute("task", task);
+            model.addAttribute("comments", comments);
+            return "admin/comments";
+        }
+        return "redirect:/admin/tasks";
+    }
+
+    @PostMapping("/tasks/comments/add")
+    public String addComment(@RequestParam Long taskId,
+                             @RequestParam String content) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            Comment comment = new Comment();
+            comment.setTask(task);
+            comment.setCommentText(content);
+            comment.setCreatedAt(LocalDateTime.now());
+
+            // Hardcode admin user for now, or get from logged-in user
+            User admin = userRepository.findById(1L).orElse(null); 
+            comment.setUser(admin);
+
+            commentRepository.save(comment);
+        }
+        return "redirect:/admin/tasks/" + taskId + "/comments";
+    }
+
+    @GetMapping("/comments")
+    public String viewAllComments(Model model) {
+        List<Comment> comments = commentRepository.findAll();
+        model.addAttribute("comments", comments);
+        return "admin/view-all-comments";
+    }
+}

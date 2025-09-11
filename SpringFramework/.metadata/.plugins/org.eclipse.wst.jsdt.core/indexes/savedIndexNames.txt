@@ -1,0 +1,6 @@
+INDEX VERSION 1.4+F:\Projects\Wipro_batch-1\SpringFramework\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+223083551.index
+3380789556.index
+1947077401.index
+3000271029.index
+3564920778.index

@@ -1,0 +1,66 @@
+package com.example.hiborm;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import com.example.hiborm.modal.Employee;
+import com.example.hiborm.util.HibernateUtil;
+
+
+/**
+ * Hello world!
+ *
+ */
+public class AppHql 
+{
+    public static void main( String[] args )
+    {
+     // to get the session from sessionfactory (It can be multiple session based on multiple services or work)
+     		Session session = HibernateUtil.getSessionFactory().openSession();
+     		
+     		// To create a  transaction ( Transient + Persistent) -- Transient when you do not to reflect and save in backend  but persistent to save into a backend
+     	   Transaction tx = session.beginTransaction();
+     	   
+//     	   Employee emp = new Employee( null, "diya","diya@gmail.com"); //transaction
+//     	   session.persist(emp);
+//     	   tx.commit();
+//     	  Employee data = session.get(Employee.class, emp.getId());
+//  		  System.out.println("Data " + data + " Added Successfully.");
+     	   
+//  		read
+//  		tx = session.beginTransaction();
+  		Query<Employee> q1 = session.createQuery("from Employee e where e.email = :email", Employee.class);
+  		q1.setParameter("email", "diya@gmail.com");
+  		Employee e1 = q1.uniqueResult();
+  		tx.commit();
+  		System.out.println("updated Result is:-" + e1);
+  		
+//  		Read All
+  		tx = session.beginTransaction();
+		List<Employee> list = session.createQuery("from Employee", Employee.class).list();
+		System.out.println("All The Saved Records:- "+list);
+		tx.commit();
+
+//		update
+		tx = session.beginTransaction();
+		e1.setEmail("diya@bizmailyahoo.com");
+		session.update(e1);
+		tx.commit();
+		System.out.println("The Data is updated:- ");
+		
+//		delete
+		tx = session.beginTransaction();
+		session.delete(e1);
+		tx.commit();
+		System.out.println("Data is Being Deleted.");
+		
+		session.close();
+		HibernateUtil.close();
+        System.out.println("HQL is Done");
+     	
+     	 
+    }
+}

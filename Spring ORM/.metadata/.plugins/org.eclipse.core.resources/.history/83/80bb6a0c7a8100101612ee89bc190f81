@@ -1,0 +1,21 @@
+package com.example.service;
+
+import com.example.dao.StudentDao;
+import com.example.model.Student;
+
+public class StudentService {
+	private final StudentDao dao;  // <-- inject interface, not impl
+
+    public StudentService(StudentDao dao) {
+        this.dao = dao;
+    }
+    
+    public void saveData(Student student) {
+        dao.saveStudent(student);
+    }
+    
+    public Student getStudent(Long id) {
+        return dao.getStudent(id);
+    }
+
+}

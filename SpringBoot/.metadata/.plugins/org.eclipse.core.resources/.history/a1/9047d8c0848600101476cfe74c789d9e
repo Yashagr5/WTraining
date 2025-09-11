@@ -1,0 +1,117 @@
+package com.company.controller;
+
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.company.model.Comment;
+import com.company.model.Task;
+import com.company.model.Task.Status;
+import com.company.model.User;
+import com.company.service.CommentService;
+import com.company.service.TaskService;
+import com.company.service.UserService;
+
+@Controller
+@RequestMapping("/user")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private CommentService commentService;
+
+    // ================== USER DASHBOARD ==================
+    @GetMapping("/dashboard")
+    public String dashboard(Model model, Principal principal) {
+        // Get logged-in user's email
+        String email = principal.getName();
+
+        // Fetch User entity from DB
+        User user = userService.findByEmail(email);
+
+        if (user == null) {
+            // fallback if user not found
+            return "redirect:/login";
+        }
+
+        // Add user to the model
+        model.addAttribute("user", user);
+
+        // Fetch user's tasks and counts
+        List<Task> tasks = taskService.getTasksByUser(user);
+        model.addAttribute("tasks", tasks);
+        model.addAttribute("totalTasks", tasks.size());
+        model.addAttribute("pendingCount", tasks.stream().filter(t -> t.getStatus() == Status.PENDING).count());
+        model.addAttribute("inProgressCount", tasks.stream().filter(t -> t.getStatus() == Status.IN_PROGRESS).count());
+        model.addAttribute("completedCount", tasks.stream().filter(t -> t.getStatus() == Status.COMPLETED).count());
+
+        return "user/dashboard";
+    }
+    
+ // ================== MY TASKS PAGE ==================
+    @GetMapping("/tasks")
+    public String myTasks(Model model, Principal principal) {
+        String email = principal.getName();
+        User user = userService.findByEmail(email);
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        List<Task> tasks = taskService.getTasksByUser(user);
+        model.addAttribute("tasks", tasks);
+
+        return "user/tasks";  // 👈 maps to your user/tasks.html
+    }
+
+ // ================== TASK COMMENTS ==================
+    @GetMapping("/tasks/comments/{taskId}")
+    public String viewComments(@PathVariable Long taskId, Model model) {
+        Task task = taskService.getTasksById(taskId);
+        if (task == null) {
+            throw new RuntimeException("Task not found");
+        }
+
+        model.addAttribute("task", task);
+        model.addAttribute("comments", commentService.getCommentsByTask(task));
+
+        return "admin/comments"; // ✅ points to admin/comments.html
+    }
+
+    @PostMapping("/tasks/comments/add")
+    public String addComment(@RequestParam Long taskId,
+                             @RequestParam String content) {
+        Task task = taskService.getTasksById(taskId);
+        if (task == null) {
+            throw new RuntimeException("Task not found");
+        }
+
+        // 🔹 later you can fetch the logged-in admin from session
+        User admin = userService.getUsersById(1L);
+
+        Comment comment = new Comment();
+        comment.setTask(task);
+        comment.setUser(admin);
+        comment.setCommentText(content);
+        comment.setCreatedAt(LocalDateTime.now());
+
+        commentService.saveComment(comment);
+
+        return "redirect:/admin/tasks/comments/" + taskId;
+    }
+   
+}

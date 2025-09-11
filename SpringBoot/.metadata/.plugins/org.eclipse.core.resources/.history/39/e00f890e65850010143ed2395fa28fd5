@@ -1,0 +1,77 @@
+package com.company.controller;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.company.model.User;
+import com.company.service.UserService;
+
+@Controller
+public class LoginController {
+
+    private final UserService userService;
+
+    public LoginController(UserService userService) {
+        this.userService = userService;
+    }
+
+    // 🌐 Show home page
+    @GetMapping("/")
+    public String home() {
+        return "index"; // index.html
+    }
+
+    // 🌐 Show login form
+    @GetMapping("/login")
+    public String loginForm() {
+        return "login"; // login.html
+    }
+
+    // 🌐 Show register form
+//    @GetMapping("/register")
+//    public String registerForm(Model model) {
+//        model.addAttribute("user", new User()); // empty form object
+//        return "register"; // register.html
+//    }
+//
+//    // 📝 Process registration form
+//    @PostMapping("/register")
+//    public String register(@ModelAttribute User user, Model model) {
+//        if (userService.getUserByEmail(user.getEmail()) != null) {
+//            model.addAttribute("error", "Email already exists!");
+//            return "register";
+//        }
+//        userService.register(user); // make sure UserService encodes password with BCrypt
+//        model.addAttribute("success", "Registration successful! You can now login.");
+//        return "login"; // redirect to login page
+//    }
+//
+//    // 👤 Dashboard redirect based on role
+//    @GetMapping("/dashboard")
+//    public String dashboard(Authentication authentication) {
+//        if (authentication == null || !authentication.isAuthenticated()) {
+//            return "redirect:/login";
+//        }
+//
+//        Object principal = authentication.getPrincipal();
+//        String role = "";
+//
+//        if (principal instanceof UserDetails userDetails) {
+//            role = userDetails.getAuthorities().iterator().next().getAuthority();
+//        }
+//
+//        if (role.equals("ROLE_ADMIN")) {
+//            return "redirect:/admin/dashboard";
+//        } else {
+//            return "redirect:/user/dashboard";
+//        }
+//    }
+
+    // 🚪 Logout is already handled by Spring Security
+    // /logout URL is auto-configured, no need for manual session.invalidate()
+}

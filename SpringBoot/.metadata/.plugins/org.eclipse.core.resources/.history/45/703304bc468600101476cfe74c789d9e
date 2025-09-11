@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>All Comments</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:Arial, sans-serif;background:linear-gradient(to right,#2193b0,#6dd5ed);min-height:100vh;padding:20px;margin:0}
+    .container{max-width:1100px;margin:0 auto;background:#fff;padding:30px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+    h1{margin:0 0 20px;color:#333;text-align:center}
+    .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin:10px 0 20px}
+    .btn{padding:8px 14px;border:none;border-radius:6px;background:#2193b0;color:#fff;text-decoration:none;cursor:pointer}
+    .btn:hover{background:#176d7a}
+    .muted{color:#666;font-size:14px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px;border-bottom:1px solid #e6e6e6;text-align:left;vertical-align:top}
+    th{background:#2193b0;color:#fff;position:sticky;top:0}
+    .comment{white-space:pre-wrap}
+    .empty{padding:16px;border:1px dashed #ccc;border-radius:8px;text-align:center;color:#666;background:#fafafa}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef7fb;font-size:12px}
+    .filters{display:flex;gap:10px;flex-wrap:wrap}
+    .filters input,.filters select{padding:8px;border:1px solid #ddd;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>All Comments</h1>
+
+    <!-- Optional toolbar (filters are client-side only) -->
+    <div class="toolbar">
+      <div class="filters">
+        <input type="text" id="search" placeholder="Search comment text…" oninput="filterRows()" />
+        <input type="text" id="userFilter" placeholder="Filter by user…" oninput="filterRows()" />
+        <input type="text" id="taskFilter" placeholder="Filter by task…" oninput="filterRows()" />
+      </div>
+      <div>
+        <a class="btn" th:href="@{/admin/dashboard}">Back to Dashboard</a>
+      </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(comments)}" class="empty">
+      No comments found.
+    </div>
+
+    <!-- <table th:if="${!#lists.isEmpty(comments)}" id="commentsTable">
+      <thead>
+        <tr>
+          <th style="width:22%">User</th>
+          <th style="width:25%">Task</th>
+          <th style="width:15%">Created</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="c : ${comments}">
+          <td>
+            <div><strong th:text="${c.user != null ? c.user.name : 'Unknown User'}">User Name</strong></div>
+            <div class="muted" th:text="${c.user != null ? c.user.email : ''}">user@email.com</div>
+          </td>
+          <td>
+            <span class="pill" th:text="${c.task != null ? c.task.title : 'Unknown Task'}">Task Title</span>
+          </td>
+          <td th:text="${#temporals.format(c.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 10:30</td>
+          <td class="comment" th:text="${c.commentText}">Comment content goes here…</td>
+        </tr>
+      </tbody>
+    </table>    -->
+  </div>
+
+  <script>
+    function filterRows(){
+      const q = (id) => document.getElementById(id).value.toLowerCase().trim();
+      const text = q('search');
+      const user = q('userFilter');
+      const task = q('taskFilter');
+
+      const rows = document.querySelectorAll('#commentsTable tbody tr');
+      rows.forEach(row => {
+        const userCell = row.children[0].innerText.toLowerCase();
+        const taskCell = row.children[1].innerText.toLowerCase();
+        const commentCell = row.children[3].innerText.toLowerCase();
+
+        const match =
+          (!text || commentCell.includes(text)) &&
+          (!user || userCell.includes(user)) &&
+          (!task || taskCell.includes(task));
+
+        row.style.display = match ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

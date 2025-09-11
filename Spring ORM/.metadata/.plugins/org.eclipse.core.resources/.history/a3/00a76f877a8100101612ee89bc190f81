@@ -1,0 +1,34 @@
+package com.example;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.example.config.AppConfig;
+import com.example.model.Course;
+import com.example.model.Student;
+import com.example.service.StudentService;
+
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+        System.out.println( "Hello World!" );
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+        StudentService service = ctx.getBean(StudentService.class);
+        
+       
+  	 Student student = new Student("Yash");
+     student.addCourse(new Course("Spring Framework"));
+     student.addCourse(new Course("Data Structures and Algorithm"));
+  	    
+  // Fetch student by ID
+     Student fetchedStudent = service.getStudents(3L);
+     System.out.println("Fetched Student: " + fetchedStudent);
+
+ctx.close();
+    }
+}

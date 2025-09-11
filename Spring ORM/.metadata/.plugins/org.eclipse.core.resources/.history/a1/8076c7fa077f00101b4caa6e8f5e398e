@@ -1,0 +1,5 @@
+package com.example.hiborm.modal;
+
+public class Employee {
+
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Task Comments</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #2193b0, #6dd5ed, #ffffff);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .task-details {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #f9f9f9;
+        }
+        .comments {
+            margin-top: 20px;
+        }
+        .comment {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .comment:last-child {
+            border-bottom: none;
+        }
+        .comment strong {
+            color: #2193b0;
+        }
+        .btn {
+            padding: 10px 18px;
+            background: #2193b0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            background: #176d80;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Comments</h1>
+
+        <!-- Task details -->
+        <div class="task-details">
+            <h3 th:text="${task.title}">Task Title</h3>
+            <p><strong>Description:</strong> <span th:text="${task.description}">Task description</span></p>
+            <p><strong>Status:</strong> <span th:text="${task.status}">PENDING</span></p>
+            <p><strong>Start Date:</strong> <span th:text="${task.startDate}">2025-01-01</span></p>
+            <p><strong>Due Date:</strong> <span th:text="${task.dueDate}">2025-01-15</span></p>
+        </div>
+
+        <!-- Comments section -->
+        <div class="comments">
+            <h3>Comments</h3>
+            <div th:if="${#lists.isEmpty(comments)}">
+                <p>No comments yet.</p>
+            </div>
+            <div th:each="comment : ${comments}" class="comment">
+                <p>
+                    <strong th:text="${comment.user.name}">User</strong>
+                    (<span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">date</span>)
+                </p>
+                <p th:text="${comment.content}">Comment text</p>
+            </div>
+        </div>
+
+        <!-- Back button -->
+        <div style="margin-top:20px;">
+            <a th:href="@{/user/tasks}" class="btn">Back to Tasks</a>
+        </div>
+    </div>
+</body>
+</html>

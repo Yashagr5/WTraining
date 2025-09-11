@@ -1,0 +1,9 @@
+package com.example;
+
+public class UserDataLoader {
+
+	public UserDataLoader() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

@@ -1,0 +1,5 @@
+package com.company.springhiborm.dao;
+
+public class StudentDao {
+
+}

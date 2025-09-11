@@ -1,0 +1,18 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>User List</title>
+</head>
+<body>
+<p></p>
+<h2>User Names:</h2>
+    <ul>
+        <c:forEach var="user" items="${userlist}">
+            <li>${userlist}</li>
+        </c:forEach>
+    </ul>
+</body>
+</html>

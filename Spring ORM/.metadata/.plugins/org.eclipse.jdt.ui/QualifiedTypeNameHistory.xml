@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="com.mysql.cj.Query"/>
+    <fullyQualifiedTypeName name="jakarta.transaction.Transaction"/>
+    <fullyQualifiedTypeName name="com.mysql.cj.Session"/>
+    <fullyQualifiedTypeName name="java.lang.module.Configuration"/>
+    <fullyQualifiedTypeName name="com.mysql.cj.xdevapi.SessionFactory"/>
+    <fullyQualifiedTypeName name="com.company.springhiborm.entity.Student"/>
+    <fullyQualifiedTypeName name="com.example.service.StudentService"/>
+    <fullyQualifiedTypeName name="com.example.entity.Student"/>
+    <fullyQualifiedTypeName name="org.springframework.transaction.TransactionStatus"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.CascadeType"/>
+    <fullyQualifiedTypeName name="org.hibernate.cfg.Configuration"/>
+    <fullyQualifiedTypeName name="jakarta.transaction.Transactional"/>
+    <fullyQualifiedTypeName name="org.hibernate.SessionFactory"/>
+    <fullyQualifiedTypeName name="java.sql.Date"/>
+    <fullyQualifiedTypeName name="java.util.Date"/>
+    <fullyQualifiedTypeName name="com.company.HibernateORM.Util.HibernateUtil"/>
+    <fullyQualifiedTypeName name="com.example.util.HibernateUtil"/>
+    <fullyQualifiedTypeName name="org.hibernate.Transaction"/>
+    <fullyQualifiedTypeName name="org.hibernate.query.Query"/>
+    <fullyQualifiedTypeName name="org.hibernate.Session"/>
+    <fullyQualifiedTypeName name="com.company.WebNestApp.model.Comment"/>
+    <fullyQualifiedTypeName name="com.company.WebNestApp.model.Task"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="javax.management.relation.Role"/>
+    <fullyQualifiedTypeName name="com.company.WebNestApp.model.User"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.Table"/>
+</qualifiedTypeNameHistroy>

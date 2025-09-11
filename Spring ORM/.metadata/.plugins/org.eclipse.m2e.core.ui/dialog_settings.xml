@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="MavenProjectWizardLocationPage">
+		<list key="location">
+			<item value="F:\Projects\Wipro_batch-1\Spring ORM\springhibernateonrtoonemapping"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
+	<section name="MavenProjectWizardArchetypePage">
+		<item key="catalog" value="internal"/>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
+	<section name="Maven2ProjectWizardArchifactPage">
+		<list key="package">
+			<item value="com.example"/>
+			<item value="com.wipro"/>
+			<item value="com.example.springhibernateonetomanymapping"/>
+			<item value="com.example.springhibernateonrtoonemapping"/>
+			<item value="com.example.WebNestApp"/>
+			<item value="com.example.WorkNestApp"/>
+			<item value="com.example.hiborm"/>
+			<item value="com.company.springhiborm"/>
+		</list>
+		<list key="groupId">
+			<item value="com.example"/>
+			<item value="com.company"/>
+		</list>
+		<list key="artifactId">
+			<item value="WorkNest"/>
+			<item value="springhibernatemanytomanymapping"/>
+			<item value="hibernate-manytomany-mapping"/>
+			<item value="springhibernateonetomanymapping"/>
+			<item value="hibernate-onetomany-mapping"/>
+			<item value="springhibernateonrtoonemapping"/>
+			<item value="hibernate-onetoone-mapping"/>
+			<item value="WebNestApp"/>
+			<item value="WorkNestApp"/>
+			<item value="hiborm"/>
+			<item value="springhiborm"/>
+			<item value="HibernateORM"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+		<list key="version">
+			<item value="0.0.1-SNAPSHOT"/>
+		</list>
+	</section>
+	<section name="MavenProjectWizardArtifactPage">
+		<list key="groupId">
+		</list>
+		<list key="name">
+		</list>
+		<list key="artifactId">
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+		<list key="version">
+			<item value="0.0.1-SNAPSHOT"/>
+		</list>
+	</section>
+	<section name="org.eclipse.m2e.core.pom.overview">
+	</section>
+	<section name="org.eclipse.m2e.core.pom.dependencies">
+	</section>
+	<section name="MavenProjectImportWizardPage">
+		<list key="rootDirectory">
+			<item value="F:\Projects\Wipro_batch-1\Spring ORM"/>
+			<item value="F:\Projects\Wipro_batch-1\Spring ORM\springHibernateOneToManyMapping"/>
+			<item value="F:\Projects\Wipro_batch-1"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
+</section>

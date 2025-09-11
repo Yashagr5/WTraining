@@ -1,0 +1,5 @@
+package aopdemo.Aop;
+
+public class BeanConfig {
+
+}

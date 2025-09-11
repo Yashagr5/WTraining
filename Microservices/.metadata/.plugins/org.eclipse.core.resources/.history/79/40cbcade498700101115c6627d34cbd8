@@ -1,0 +1,23 @@
+package com.example.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.beans.Payment;
+import com.example.repo.PaymentRepo;
+
+@Service
+public class PaymentService {
+	@Autowired
+	PaymentRepo repo;
+	s
+	
+	public List<Payment> getPaymentByUserById(Integer userId)
+	{
+		
+		return repo.findByUserId(userId);
+	}
+	
+}

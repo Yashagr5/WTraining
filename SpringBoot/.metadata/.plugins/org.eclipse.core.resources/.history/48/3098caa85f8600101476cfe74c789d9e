@@ -1,0 +1,116 @@
+package com.company.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.company.model.Task;
+import com.company.model.User;
+import com.company.service.CommentService;
+import com.company.service.TaskService;
+import com.company.service.UserService;
+
+@Controller
+@RequestMapping("/user")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private CommentService commentService;
+
+    // ================== USER DASHBOARD ==================
+    @GetMapping("/dashboard")
+    public String dashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        if (userDetails == null) {
+            return "redirect:/login";
+        }
+
+        // Fetch logged-in user
+        User user = userService.findByEmail(userDetails.getUsername()).orElse(null);
+        model.addAttribute("user", user);
+
+        // Fetch tasks assigned to the user
+        List<Task> tasks = taskService.getTasksByUser(user);
+        model.addAttribute("tasks", tasks);
+
+        return "user/dashboard"; // Thymeleaf template
+    }
+//    // ================== MY TASKS ==================
+//    @GetMapping("/tasks")
+//    public String myTasks(HttpSession session, Model model) {
+//    	Long userId = (Long) session.getAttribute("userId");
+//        if (userId == null) {
+//            return "redirect:/login";
+//        }
+//
+//        User user = userService.getUsersById(userId);
+//        List<Task> tasks = taskService.getTasksByUser(user); // ✅ use existing method
+//        model.addAttribute("tasks", tasks);
+//
+//        return "user/my-tasks"; // create a my-tasks.html if needed
+//    }
+//
+//    // ================== UPDATE TASK STATUS ==================
+//    @GetMapping("/tasks/updateStatus")
+//    public String updateStatus(@RequestParam Long taskId,
+//                               @RequestParam String status,
+//                               HttpSession session) {
+//
+//    	Long userId = (Long) session.getAttribute("userId");
+//        if (userId == null) {
+//            return "redirect:/login";
+//        }
+//
+//        taskService.getTaskById(taskId).ifPresent(task -> {
+//            if (task.getAssignedUser().getId().equals(userId)) {
+//                try {
+//                    Task.Status enumStatus = Task.Status.valueOf(status.toUpperCase());
+//                    task.setStatus(enumStatus);   // ✅ set enum
+//                    taskService.saveTask(task);
+//                } catch (IllegalArgumentException e) {
+//                    // Invalid status string, ignore or log
+//                }
+//            }
+//        });
+//
+//        return "redirect:/user/dashboard";
+//    }
+//
+//    // ================== VIEW COMMENTS ==================
+//    @GetMapping("/tasks/comments")
+//    public String viewComments(@RequestParam Long taskId, Model model, HttpSession session) {
+//        Long userId = (Long) session.getAttribute("userId");
+//        if (userId == null) {
+//            return "redirect:/login";
+//        }
+//
+//        Task task = taskService.getTaskById(taskId);
+//        model.addAttribute("task", task);
+//        model.addAttribute("comments", commentService.getCommentsByTaskId(taskId));
+//
+//        return "user/view-comments"; // create view-comments.html
+//    }
+//
+//    // ================== VIEW ALL COMMENTS ==================
+//    @GetMapping("/comments")
+//    public String allComments(HttpSession session, Model model) {
+//        Long userId = (Long) session.getAttribute("userId");
+//        if (userId == null) {
+//            return "redirect:/login";
+//        }
+//
+//        model.addAttribute("comments", commentService.getAllCommentsByUserId(userId));
+//        return "user/all-comments"; // create all-comments.html
+//    }
+}

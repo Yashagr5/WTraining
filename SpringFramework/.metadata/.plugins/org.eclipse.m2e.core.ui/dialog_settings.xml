@@ -2,6 +2,10 @@
 <section name="Workbench">
 	<section name="MavenProjectWizardLocationPage">
 		<list key="location">
+			<item value="F:\Projects\Wipro_batch-1\SpringFramework\SpringMvclava"/>
+			<item value="F:\Projects\Wipro_batch-1\SpringFramework\WiproMvc"/>
+			<item value="F:\Projects\Wipro_batch-1\SpringFramework\jdbctemplatedemo"/>
+			<item value="F:\Projects\Wipro_batch-1\SpringFramework"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>
@@ -25,13 +29,27 @@
 	</section>
 	<section name="Maven2ProjectWizardArchifactPage">
 		<list key="package">
-			<item value="com.company.springcore.SpringCore"/>
+			<item value="com.javacodegeeks.springexample"/>
+			<item value="com.gl.web"/>
+			<item value="com.company.MvcCompany"/>
+			<item value="com.company.MvcWipro"/>
+			<item value="com.company.wiproMvc"/>
+			<item value="com.company"/>
+			<item value="MvcWipro.MvcWipro"/>
 		</list>
 		<list key="groupId">
-			<item value="com.company.springcore"/>
+			<item value="com.javacodegeeks"/>
+			<item value="com"/>
+			<item value="com.company"/>
+			<item value="MvcWipro"/>
 		</list>
 		<list key="artifactId">
-			<item value="SpringCore"/>
+			<item value="springexample"/>
+			<item value="SpringMvclava"/>
+			<item value="MvcCompany"/>
+			<item value="MvcWipro"/>
+			<item value="wiproMvc"/>
+			<item value="mvcWipro"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>

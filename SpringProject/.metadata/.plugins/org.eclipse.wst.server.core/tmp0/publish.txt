@@ -1,0 +1,4 @@
+#Tomcat publish data
+#Mon Sep 01 11:54:51 IST 2025
+org.eclipse.jst.j2ee.server\:/binary\:C\:\\Users\\lenovo\\.m2\\repository\\org\\springframework\\spring-web\\5.3.30\\spring-web-5.3.30.jar=WEB-INF/lib/spring-web-5.3.30.jar
+org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\lenovo\\.m2\\repository\\org\\springframework\\spring-web\\5.3.30\\spring-web-5.3.30.jar=WEB-INF/lib/spring-web-5.3.30.jar

@@ -1,0 +1,60 @@
+package com.company.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.company.model.Task;
+import com.company.model.User;
+import com.company.service.TaskService;
+import com.company.service.UserService;
+
+@Controller
+public class AdminController {
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private UserService userService;
+
+    // Admin dashboard
+    @GetMapping("/admin/dashboard")
+    public String dashboard(Model model) {
+
+    	model.addAttribute("pendingTasks", taskService.findByStatus("PENDING"));
+        model.addAttribute("inProgressTasks", taskService.findByStatus("IN_PROGRESS"));
+        model.addAttribute("completedTasks", taskService.findByStatus("COMPLETED"));
+        model.addAttribute("delayedTasks", taskService.findByStatus("DELAYED"));
+        return "admin/dashboard";
+    }
+
+    // Manage all tasks
+    @GetMapping("/admin/tasks")
+    public String manageTasks(Model model) {
+        List<Task> allTasks = taskService.getAllTasks();
+        model.addAttribute("tasks", allTasks);
+        return "admin/tasks";
+    }
+
+    // View comments of a specific task
+    @GetMapping("/admin/tasks/comments/{taskId}")
+    public String viewComments(@PathVariable Long taskId, Model model) {
+        Task task = taskService.getTaskById(taskId);
+        model.addAttribute("task", task);
+        model.addAttribute("comments", task.getComments());
+        return "admin/comments";
+    }
+
+    // View all users (optional)
+    @GetMapping("/admin/users")
+    public String viewUsers(Model model) {
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "admin/users";
+    }
+}

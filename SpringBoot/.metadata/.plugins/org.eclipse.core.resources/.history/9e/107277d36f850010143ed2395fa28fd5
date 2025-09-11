@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(to right, #2193b0, #6dd5ed, #ffffff); 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2); 
+        }
+        h1 { text-align: center; margin-bottom: 30px; color: #333; }
+        .welcome-message { text-align: center; font-size: 18px; margin-bottom: 30px; color: #555; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #2193b0; text-align: center; }
+        .stat-card h3 { margin-top: 0; color: #2193b0; }
+        .stat-number { font-size: 24px; font-weight: bold; color: #333; }
+        .nav-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .nav-btn { display: block; padding: 15px; background: #2193b0; color: white; text-align: center; text-decoration: none; border-radius: 6px; font-weight: bold; transition: background 0.3s; }
+        .nav-btn:hover { background: #176d80; transform: translateY(-2px); }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: #2193b0; color: #fff; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; color: white; font-weight: bold; }
+        .status-pending { background: #ffc107; }
+        .status-inprogress { background: #17a2b8; }
+        .status-completed { background: #28a745; }
+        .status-delayed { background: #dc3545; }
+        .action-container { display: flex; gap: 5px; flex-wrap: nowrap; align-items: center; }
+        .status-dropdown { padding: 6px; border-radius: 4px; border: 1px solid #ddd; margin-right: 5px; }
+        .action-btn { padding: 6px 12px; border: none; border-radius: 4px; color: white; text-decoration: none; display: inline-block; cursor: pointer; font-size: 12px; white-space: nowrap; }
+        .btn-comments { background: #6c757d; }
+        .btn-comments:hover { background: #5a6268; }
+    </style>
+
+    <script>
+        function updateTaskStatus(taskId, status) {
+            window.location.href = /*[[${#httpServletRequest.contextPath}]]*/ '/user/tasks/updateStatus?taskId=' + taskId + '&status=' + status;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>User Dashboard</h1>
+        <div class="welcome-message">
+            Welcome, <span th:text="${user.name}">User</span>! Here's your work overview.
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Tasks</h3>
+                <div class="stat-number" th:text="${#lists.size(tasks)}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <div class="stat-number" th:text="${tasks.?[status=='PENDING'].size()}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>In Progress</h3>
+                <div class="stat-number" th:text="${tasks.?[status=='IN_PROGRESS'].size()}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Completed</h3>
+                <div class="stat-number" th:text="${tasks.?[status=='COMPLETED'].size()}">0</div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <div class="nav-menu">
+            <a th:href="@{/user/tasks}" class="nav-btn">My Tasks</a>
+            <a th:href="@{/user/comments}" class="nav-btn">View All Comments</a>
+            <a th:href="@{/logout}" class="nav-btn">Logout</a>
+        </div>
+
+        <!-- Tasks Table -->
+        <h2>Your Tasks</h2>
+        <div th:if="${#lists.isEmpty(tasks)}" style="text-align:center; color:#666; font-style:italic;">
+            No tasks assigned yet. Please check back later.
+        </div>
+        <table th:if="${!#lists.isEmpty(tasks)}">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+            <tr th:each="task : ${tasks}">
+                <td th:text="${task.title}">Title</td>
+                <td th:text="${task.description}">Description</td>
+                <td>
+                    <span th:classappend="'status-badge ' + ${task.status=='COMPLETED'?'status-completed':task.status=='IN_PROGRESS'?'status-inprogress':task.status=='PENDING'?'status-pending':'status-delayed'}"
+                          th:text="${task.status}">Status</span>
+                </td>
+                <td th:text="${task.startDate}">Start Date</td>
+                <td th:text="${task.dueDate}">Due Date</td>
+                <td>
+                    <div class="action-container">
+                        <select class="status-dropdown" th:onchange="|updateTaskStatus(${task.id}, this.value)|">
+                            <option value="PENDING" th:selected="${task.status=='PENDING'}">Pending</option>
+                            <option value="IN_PROGRESS" th:selected="${task.status=='IN_PROGRESS'}">In Progress</option>
+                            <option value="COMPLETED" th:selected="${task.status=='COMPLETED'}">Completed</option>
+                            <option value="DELAYED" th:selected="${task.status=='DELAYED'}">Delayed</option>
+                        </select>
+                        <a th:href="@{/user/tasks/comments(taskId=${task.id})}" class="action-btn btn-comments">Comments</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

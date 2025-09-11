@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="com.company.WebNestApp.model.Task"/>
+    <fullyQualifiedTypeName name="com.company.WebNestApp.model.Comment"/>
+    <fullyQualifiedTypeName name="javax.persistence.Entity"/>
+    <fullyQualifiedTypeName name="javax.persistence.Table"/>
+    <fullyQualifiedTypeName name="javax.persistence.CascadeType"/>
+    <fullyQualifiedTypeName name="javax.sql.DataSource"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.CascadeType"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.Table"/>
+    <fullyQualifiedTypeName name="org.hibernate.SessionFactory"/>
+    <fullyQualifiedTypeName name="org.hibernate.Session"/>
+    <fullyQualifiedTypeName name="jakarta.transaction.Transactional"/>
+    <fullyQualifiedTypeName name="org.hibernate.resource.transaction.spi.TransactionStatus"/>
+    <fullyQualifiedTypeName name="org.springframework.transaction.TransactionStatus"/>
+    <fullyQualifiedTypeName name="com.company.WebNest.config.AppConfig"/>
+    <fullyQualifiedTypeName name="java.util.Date"/>
+    <fullyQualifiedTypeName name="com.company.WebNest.model.Comment"/>
+    <fullyQualifiedTypeName name="com.company.WebNest.model.Task"/>
+    <fullyQualifiedTypeName name="com.company.WebNest.model.User"/>
+    <fullyQualifiedTypeName name="com.company.WebNest.service.UserService"/>
+    <fullyQualifiedTypeName name="com.company.WebNest.service.TaskService"/>
+    <fullyQualifiedTypeName name="com.company.WebNest.service.CommentService"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+</qualifiedTypeNameHistroy>

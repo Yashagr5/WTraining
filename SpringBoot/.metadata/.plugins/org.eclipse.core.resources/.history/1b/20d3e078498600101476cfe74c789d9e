@@ -1,0 +1,141 @@
+package com.company.controller;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.company.model.Comment;
+import com.company.model.Task;
+import com.company.model.User;
+import com.company.service.CommentService;
+import com.company.service.TaskService;
+import com.company.service.UserService;
+
+@Controller
+@RequestMapping("/admin") // ✅ Base path for all admin operations
+public class AdminController {
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private CommentService commentService;
+
+    // ================== DASHBOARD ==================
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
+        model.addAttribute("pendingTasks", taskService.getTasksByStatus("PENDING"));
+        model.addAttribute("inProgressTasks", taskService.getTasksByStatus("IN_PROGRESS"));
+        model.addAttribute("completedTasks", taskService.getTasksByStatus("COMPLETED"));
+        model.addAttribute("delayedTasks", taskService.getTasksByStatus("DELAYED"));
+        return "admin/dashboard";
+    }
+
+    // ================== TASK MANAGEMENT ==================
+    @GetMapping("/tasks")
+    public String manageTasks(Model model) {
+        List<Task> tasks = taskService.getAllTasks();
+        List<User> users = userService.getAllUsers();
+
+        model.addAttribute("tasks", tasks);
+        model.addAttribute("users", users);
+
+        return "admin/tasks"; // ✅ points to admin/tasks.html
+    }
+
+    @PostMapping("/tasks/add")
+    public String addTask(@ModelAttribute Task task,
+            @RequestParam(value = "assignedTo", required = false) Long userId) {
+    		User user = null;
+
+    		if (userId != null) {
+    			// assign chosen user
+    			user = userService.getUsersById(userId);
+    		} else {
+    			// ✅ fallback: assign first available user (or an admin)	
+    			List<User> users = userService.getAllUsers();
+    			if (!users.isEmpty()) {
+    				user = users.get(0); // pick the first user as default
+    			}
+    		}
+
+    		task.setAssignedUser(user);
+    		taskService.saveTask(task);
+
+        return "redirect:/admin/tasks";
+    }
+
+    @GetMapping("/tasks/updateStatus")
+    public String updateTaskStatus(@RequestParam("taskId") Long taskId,
+                                   @RequestParam("status") String status) {
+        Task task = taskService.getTasksById(taskId);
+        if (task != null) {
+        	task.setStatus(Task.Status.valueOf(status));
+            taskService.saveTask(task);
+        }
+        return "redirect:/admin/tasks";
+    }
+
+    // ================== TASK COMMENTS ==================
+    @GetMapping("/tasks/comments/{taskId}")
+    public String viewComments(@PathVariable Long taskId, Model model) {
+        Task task = taskService.getTasksById(taskId);
+        if (task == null) {
+            throw new RuntimeException("Task not found");
+        }
+
+        model.addAttribute("task", task);
+        model.addAttribute("comments", commentService.getCommentsByTask(task));
+
+        return "admin/comments"; // ✅ points to admin/comments.html
+    }
+
+    @PostMapping("/tasks/comments/add")
+    public String addComment(@RequestParam Long taskId,
+                             @RequestParam String content) {
+        Task task = taskService.getTasksById(taskId);
+        if (task == null) {
+            throw new RuntimeException("Task not found");
+        }
+
+        // 🔹 later you can fetch the logged-in admin from session
+        User admin = userService.getUsersById(1L);
+
+        Comment comment = new Comment();
+        comment.setTask(task);
+        comment.setUser(admin);
+        comment.setCommentText(content);
+        comment.setCreatedAt(LocalDateTime.now());
+
+        commentService.saveComment(comment);
+
+        return "redirect:/admin/tasks/comments/" + taskId;
+    }
+
+    // ================== USER MANAGEMENT ==================
+    @GetMapping("/users")
+    public String viewUsers(Model model) {
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "admin/users";
+    }
+    
+    // ================== ALL COMMENTS ==================
+    @GetMapping("admin/allcomments")
+    public String allComments(Model model) {
+    	model.addAttribute("comments", commentService.getAllComments());
+        return "admin/view-all-comments";  // template file name
+    }
+}

@@ -1,0 +1,11 @@
+package aopdemo.Aop;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+
+public class ShoppingCart {
+public void checkout(String status) {
+	
+}
+}

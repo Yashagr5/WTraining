@@ -1,0 +1,5 @@
+package jdbctemplate.mappers;
+
+public class StudentRowMapper {
+
+}

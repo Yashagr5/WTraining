@@ -1,0 +1,5 @@
+package com.company.springhiborm.service;
+
+public class StudentService {
+
+}

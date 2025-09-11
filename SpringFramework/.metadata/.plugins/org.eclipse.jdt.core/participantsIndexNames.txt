@@ -1,0 +1,9 @@
+INDEX VERSION 1.134
+F:\Projects\Wipro_batch-1\SpringFramework\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1630346077.index
+\springexample\src\main\resources
+F:\Projects\Wipro_batch-1\SpringFramework\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1947077401.index
+\SpringMvclava\src\main\resources
+F:\Projects\Wipro_batch-1\SpringFramework\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2494783387.index
+\springexample\src\main\java
+F:\Projects\Wipro_batch-1\SpringFramework\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1649181857.index
+\MvcCompany\src\main\resources

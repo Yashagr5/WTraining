@@ -1,0 +1,64 @@
+package com.company.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.company.model.User;
+import com.company.service.UserService;
+
+@Controller
+public class RegisterController {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // Show registration page
+    @GetMapping("/register")
+    public String showRegisterPage(Model model) {
+        model.addAttribute("user", new User()); // empty user object for form
+        return "register"; // loads register.html
+    }
+
+    // Handle registration form submit
+    @PostMapping("/register")
+    public String registerUser(
+            @ModelAttribute("user") User user,
+            @RequestParam("confirmPassword") String confirmPassword,
+            Model model) {
+
+        try {
+            // Check password confirmation
+            if (!user.getPassword().equals(confirmPassword)) {
+                model.addAttribute("error", "Passwords do not match!");
+                return "register";
+            }
+
+            // Encode password
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            // Role: take from form (default to USER if empty)
+            if (user.getRole() == null) {
+                user.setRole(User.Role.USER);
+            }
+
+            userService.registerUser(user);
+
+            // Redirect to login after successful registration
+            return "redirect:/login?registered=true";
+
+        } catch (RuntimeException e) {
+            // If email already exists or any issue
+            model.addAttribute("error", e.getMessage());
+            return "register";
+        }
+    }
+}

@@ -1,0 +1,9 @@
+package com.gl.web;
+
+
+@Configuration
+@EnableWebMvc
+@ComponentScan("com.gl")
+public class MvcConfig extends WebMvcConfigurerAdapter{
+
+}

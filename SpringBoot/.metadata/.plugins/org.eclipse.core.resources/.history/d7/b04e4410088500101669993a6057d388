@@ -1,0 +1,25 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to WorkNest</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: linear-gradient(to right, #a445b2, #d41872); color: white; text-align: center; }
+        header { padding: 2rem; }
+        h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        p { font-size: 1.2rem; margin-bottom: 2rem; }
+        .btn { display: inline-block; margin: 0.5rem; padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; color: white; background: #333; transition: background 0.3s; }
+        .btn:hover { background: #000; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to WorkNest</h1>
+        <p>Manage tasks, collaborate, and stay productive!</p>
+        <a href="${pageContext.request.contextPath}/login" class="btn">Login</a>
+        <a href="${pageContext.request.contextPath}/register" class="btn">Register</a>
+    </header>
+</body>
+</html>

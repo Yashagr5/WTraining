@@ -1,0 +1,40 @@
+package com.company.repository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.company.model.Task;
+import com.company.model.User;
+
+@Repository
+public interface TaskRepository extends JpaRepository<Task, Long> {
+
+    // ✅ Find tasks assigned to a specific user
+    List<Task> findByAssignedUsersContaining(User user);
+
+    // Find tasks by status
+    List<Task> findByStatus(Task.Status status);
+
+    // Find overdue tasks (due date before today & not completed)
+    List<Task> findByDueDateBeforeAndStatusNot(LocalDate date, Task.Status status);
+
+    // Find tasks by title keyword (case insensitive search)
+    List<Task> findByTitleContainingIgnoreCase(String keyword);
+
+    // ✅ Find a task by title and assigned user
+    Optional<Task> findByTitleAndAssignedUsersContaining(String title, User user);
+
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.status = :status")
+    long countByStatus(Task.Status status);
+
+    @Query("SELECT t FROM Task t WHERE t.status != 'COMPLETED' AND t.dueDate < :currentDate")
+    List<Task> findDelayedTasks(LocalDate currentDate);
+
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.status != 'COMPLETED' AND t.dueDate < :currentDate")
+    long countDelayedTasks(LocalDate currentDate);
+}

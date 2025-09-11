@@ -1,0 +1,45 @@
+package com.example.hiborm;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import com.example.hiborm.modal.Employee;
+import com.example.hiborm.util.HibernateUtil;
+import jakarta.persistence.Query;
+
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+     // to get the session from sessionfactory (It can be multiple session based on multiple services or work)
+     		Session session = HibernateUtil.getSessionFactory().openSession();
+     		
+     		// To create a  transaction ( Transient + Persistent) -- Transient when you do not to reflect and save in backend  but persistent to save into a backend
+     	   Transaction tx = session.beginTransaction();
+     	   
+     	   Employee emp = new Employee( null, "Yash","yash@gmail"); //transaction	
+     	   
+     	   session.persist(emp);
+     	   
+     	   tx.commit();
+     	   
+     	   //Read the data
+     	   Employee eData = session.get(Employee.class, emp.getId());
+     	   System.out.println("Retreived the data: "+ eData);
+     	   
+     	   //Update data
+     	   tx= session.beginTransaction();
+     	   eData.setEmail("yash@outlook.com");
+     	  System.out.println("Retreived the data: "+ eData);
+     	  tx.commit();
+     	  
+     	  // HQL Query to write to fetch using email // Parameterized Query
+     	  Query<Employee> q1 = session.createQuery("from Employee e where e.email = :e", Employee.class);
+     	  
+    }
+}

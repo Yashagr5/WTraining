@@ -1,0 +1,29 @@
+package com.company.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.company.model.User;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    // Find user by email (used for login)
+    Optional<User> findByEmail(String email);
+    
+    User findByEmails(String email);
+
+    // Check if user already exists by email
+    boolean existsByEmail(String email);
+
+    // Optional: find user by name
+    Optional<User> findByName(String name);
+    
+ // Optional: find user by role
+    List<User> findByRole(String role);
+    
+    User findByEmailAndPassword(String email, String password);
+}

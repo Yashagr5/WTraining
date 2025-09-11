@@ -1,0 +1,5 @@
+package jdbctemplate.beans;
+
+public class Student {
+
+}

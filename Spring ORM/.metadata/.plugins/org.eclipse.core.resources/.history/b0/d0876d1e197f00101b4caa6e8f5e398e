@@ -1,0 +1,52 @@
+package com.example.hiborm;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
+
+import com.example.hiborm.modal.Employee;
+import com.example.hiborm.util.HibernateUtil;
+
+
+/**
+ * Hello world!
+ *
+ */
+public class AppNativeSql 
+{
+    public static void main( String[] args )
+    {
+     // to get the session from sessionfactory (It can be multiple session based on multiple services or work)
+     		Session session = HibernateUtil.getSessionFactory().openSession();
+     		
+     		// To create a  transaction ( Transient + Persistent) -- Transient when you do not to reflect and save in backend  but persistent to save into a backend
+     	   Transaction tx = session.beginTransaction();
+     	   
+     	   // Add/create
+     	  String insertSQL = "INSERT INTO employee (name, email) VALUES (:name, :email)";
+          NativeQuery<Employee> insertQuery = session.createNativeQuery(insertSQL);
+          insertQuery.setParameter("name", "diaa");
+          insertQuery.setParameter("email", "diaa@gmail.com");
+          insertQuery.executeUpdate();
+          tx.commit();
+          
+          
+          // Read
+          tx = session.beginTransaction();
+          String selectSQL = "Select * from Employee Where id = :id";
+          NativeQuery<Employee> selectQuery = session.createNativeQuery(selectSQL, Employee.class);
+          selectQuery.setParameter("id", 1L);
+          Employee eData = selectQuery.uniqueResult();
+          System.out.println("Retrieved Data: "+eData);
+          tx.commit();
+     	 
+//     	 // Update
+//     	 tx = session.beginTransaction();
+//     	 String insertSQL2 = "UPDATE"
+     	 
+     	 session.close();
+    }
+}

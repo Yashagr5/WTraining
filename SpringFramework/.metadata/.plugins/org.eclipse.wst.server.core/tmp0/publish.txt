@@ -1,0 +1,5 @@
+#Tomcat publish data
+#Tue Aug 19 17:09:17 IST 2025
+org.eclipse.jst.j2ee.server\:/binary\:C\:\\Users\\lenovo\\.m2\\repository\\org\\springframework\\spring-web\\5.1.0.RELEASE\\spring-web-5.1.0.RELEASE.jar=WEB-INF/lib/spring-web-5.1.0.RELEASE.jar
+org.eclipse.jst.j2ee.server\:Aop=WEB-INF/lib/Aop-0.0.1-SNAPSHOT.jar
+org.eclipse.jst.j2ee.server\:DI_MavenProject=WEB-INF/lib/DI_MavenProject-0.0.1-SNAPSHOT.jar

@@ -1,0 +1,96 @@
+package com.company.service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.company.model.Task;
+import com.company.model.User;
+import com.company.repository.TaskRepository;
+
+@Service
+public class TaskService {
+
+    private final TaskRepository taskRepository;
+
+    // ✅ Constructor Injection
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
+
+    // Create or update a task
+    public Task saveTask(Task task) {
+        return taskRepository.save(task);
+    }
+
+    // Find task by ID
+    public Optional<Task> getTaskById(Long id) {
+        return taskRepository.findById(id);
+    }
+    
+    public Task getTasksById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
+    }
+
+    // Get all tasks
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll();
+    }
+
+    // Get tasks assigned to a specific user
+    public List<Task> getTasksByUser(User user) {
+        return taskRepository.findByAssignedUser(user);
+    }
+
+    // Get tasks by status
+    public List<Task> getTasksByStatus(Task.Status status) {
+        return taskRepository.findByStatus(status);
+    }
+
+    // Get delayed tasks
+    public List<Task> getDelayedTasks(LocalDate currentDate) {
+        return taskRepository.findDelayedTasks(currentDate);
+    }
+
+    // Count delayed tasks
+    public long countDelayedTasks(LocalDate currentDate) {
+        return taskRepository.countDelayedTasks(currentDate);
+    }
+
+    // Count tasks by status
+    public long countTasksByStatus(Task.Status status) {
+        return taskRepository.countByStatus(status);
+    }
+
+    // Search tasks by title keyword
+    public List<Task> searchTasksByTitle(String keyword) {
+        return taskRepository.findByTitleContainingIgnoreCase(keyword);
+    }
+
+    // Find task by title and assigned user
+    public Optional<Task> getTaskByTitleAndUser(String title, User user) {
+        return taskRepository.findByTitleAndAssignedUser(title, user);
+    }
+
+    // Delete task by ID
+    public void deleteTask(Long id) {
+        taskRepository.deleteById(id);
+    }
+
+	public void updateTaskStatus(Optional<Task> task, String status) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public List<Task> getTasksByStatus(String status) {
+	    try {
+	        Task.Status enumStatus = Task.Status.valueOf(status.toUpperCase());
+	        return taskRepository.findByStatus(enumStatus);
+	    } catch (IllegalArgumentException e) {
+	        throw new RuntimeException("Invalid task status: " + status);
+	    }
+	}
+}

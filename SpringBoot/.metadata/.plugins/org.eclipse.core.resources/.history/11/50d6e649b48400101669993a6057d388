@@ -1,0 +1,5 @@
+package com.company.securityconfig;
+
+public class SecurityConfiguration {
+
+}

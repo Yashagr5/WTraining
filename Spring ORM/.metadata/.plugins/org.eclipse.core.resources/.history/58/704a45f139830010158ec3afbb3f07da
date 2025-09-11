@@ -1,0 +1,46 @@
+package com.company.WebNestApp.dao;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.company.WebNestApp.model.Comment;
+
+import jakarta.transaction.Transactional;
+
+@Repository
+public class CommentDaoImpl implements CommentDao{
+	@Autowired
+    private SessionFactory sessionFactory;
+
+    private Session getSession() {
+        return sessionFactory.getCurrentSession();
+    }
+    
+
+    @Override
+    @Transactional
+    public void saveComment(Comment comment) {
+        getSession().saveOrUpdate(comment);
+    }
+    
+    @Override
+    @Transactional
+    public List<Comment> findByTaskId(Long taskId) {
+        return getSession()
+                .createQuery("from Comment where task.id = :taskId", Comment.class)
+                .setParameter("taskId", taskId)
+                .list();
+    }
+    
+    @Override
+    @Transactional
+    public List<Comment> findAll() {
+        return getSession()
+                .createQuery("from Comment", Comment.class)
+                .list();
+    }
+}

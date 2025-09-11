@@ -1,0 +1,95 @@
+<!-- src/main/resources/templates/user/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | WorkNest</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+        }
+
+        header {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        nav a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            padding: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            background: #2575fc;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #1b5ed7;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>WorkNest - User Dashboard</h1>
+        <nav>
+            <a th:href="@{/user/task}">My Tasks</a>
+            <a th:href="@{/user/comments}">Comments</a>
+            <a th:href="@{/logout}">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Welcome, <span th:text="${user.name}">User</span> 👋</h2>
+            <p>This is your dashboard. You can manage your tasks and check your team’s progress here.</p>
+        </div>
+
+        <div class="card">
+            <h2>Quick Actions</h2>
+            <a th:href="@{/user/task}" class="btn">View Tasks</a>
+            <a th:href="@{/user/comments}" class="btn">View Comments</a>
+        </div>
+    </div>
+</body>
+</html>

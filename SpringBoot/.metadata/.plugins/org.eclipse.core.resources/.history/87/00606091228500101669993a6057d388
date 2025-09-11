@@ -1,0 +1,36 @@
+spring.application.name=SpringBootJDBCSecurityBasic
+
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.h2.console.enabled=true
+
+
+#spring.datasource.initialization-mode = always
+#spring.datasource.schema = classpath:schema.sql
+
+
+#Enable the Swagger
+spring.mvc.pathmatch.matching-strategy=ant-path-matcher
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.enabled=true
+springdoc.api-docs.path=/v3/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+
+
+# MySQL Database Connection
+#spring.datasource.url=jdbc:mysql://localhost:3306/wiprojdbc?useSSL=false&serverTimezone=UTC
+#spring.datasource.username=root
+#spring.datasource.password=Yash@123
+#spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+
+# Thymeleaf Configuration
+spring.thymeleaf.cache=false
+
+# JWT Configuration
+jwt.secret=worknest_secret_key_2024
+jwt.expiration=86400000

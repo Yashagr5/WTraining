@@ -1,0 +1,59 @@
+package com.company.controller;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.company.model.Task;
+import com.company.repository.TaskRepository;
+
+@Controller
+public class AdminController {
+
+    @Autowired
+    private TaskRepository taskRepository;
+
+    // Admin dashboard
+    @GetMapping("/admin/dashboard")
+    public String dashboard(Model model) {
+        // Fetch tasks by status
+        List<Task> pendingTasks = taskRepository.findByStatus(Task.Status.PENDING);
+        List<Task> inProgressTasks = taskRepository.findByStatus(Task.Status.IN_PROGRESS);
+        List<Task> completedTasks = taskRepository.findByStatus(Task.Status.COMPLETED);
+        List<Task> delayedTasks = taskRepository.findDelayedTasks(LocalDate.now());
+
+        // Add attributes to model
+        model.addAttribute("pendingTasks", pendingTasks);
+        model.addAttribute("inProgressTasks", inProgressTasks);
+        model.addAttribute("completedTasks", completedTasks);
+        model.addAttribute("delayedTasks", delayedTasks);
+
+        return "admin/dashboard";
+    }
+
+    // View all tasks
+    @GetMapping("/admin/tasks")
+    public String viewAllTasks(Model model) {
+        List<Task> tasks = taskRepository.findAll();
+        model.addAttribute("tasks", tasks);
+        return "admin/tasks"; // create tasks.html for managing all tasks
+    }
+
+    // View comments for a specific task
+    @GetMapping("/admin/tasks/comments/{taskId}")
+    public String viewTaskComments(@PathVariable("taskId") Long taskId, Model model) {
+        Task task = taskRepository.findById(taskId).orElse(null);
+        if (task != null) {
+            model.addAttribute("task", task);
+            model.addAttribute("comments", task.getComments()); // Assuming Task entity has a getComments() method
+        }
+        return "admin/task-comments"; // create task-comments.html for listing comments
+    }
+
+    // Optional: add more admin functionalities like update tasks, delete tasks, etc.
+}

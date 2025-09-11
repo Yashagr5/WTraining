@@ -1,0 +1,24 @@
+package com.company.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class LoginController {
+
+    // Map root URL ("/") to index.html
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+    
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register";
+    }
+}

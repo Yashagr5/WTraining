@@ -1,0 +1,40 @@
+package com.example;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.example.config.AppConfig;
+import com.example.model.Course;
+import com.example.model.Student;
+import com.example.service.StudentService;
+
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+        System.out.println( "Hello World!" );
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+        StudentService service = ctx.getBean(StudentService.class);
+        
+        Course c1 = new Course("Spring Framework"); //7,8
+  	   Course c2 = new Course("Data Structures and Algorithm");
+  	   
+  	   Student ritu =  new Student("Ritu"); //4
+  	   Student sakshi =  new Student("Sakshi");
+  	   Student shubham =  new Student("Shubham");
+  	   
+  	   ritu.addCourse(c1);
+  	   ritu.addCourse(c2);  
+  	   
+  	   sakshi.addCourse(c1);
+  	   
+  	    shubham.addCourse(c2);
+  	    
+
+ctx.close();
+    }
+}

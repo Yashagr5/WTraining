@@ -1,0 +1,52 @@
+package com.example.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.beans.Contact;
+import com.example.beans.Order;
+import com.example.beans.Payment;
+import com.example.beans.User;
+import com.example.repo.UserRepo;
+
+@Service
+public class UserService {
+	
+	
+	@Autowired
+	UserRepo repo;
+	
+//	@Autowired
+//	RestTemplate restTemplate;
+	
+
+	@Autowired
+	ContactFeignClient feignClient1;
+	@Autowired
+	OrderFeignClient feignClient2;
+	@Autowired
+	PaymentFeignClient feignClient3;
+	
+	// here it has retrieved the id from controller mapping which is 1 let's say
+	public User getUserById(Integer userId)
+	{
+		
+		User user = repo.findById(userId).orElse(null);
+
+
+        // Get contacts, orders, and payments via Feign clients
+        List<Contact> contacts = feignClient1.getSpecificContact(userId);
+        List<Order> orders = feignClient2.getSpecificOrder(userId);
+        List<Payment> payments = feignClient3.getSpecificPayment(userId);
+
+        // Set retrieved data into user object
+        user.setContacts(contacts);
+        user.setOrders(orders);
+        user.setPayments(payments);
+
+        return user;
+	}
+
+}
